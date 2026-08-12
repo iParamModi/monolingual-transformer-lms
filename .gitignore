@@ -1,0 +1,7 @@
+venv
+__pycache__/
+
+# Raw downloaded data is large - keep it out of git.
+# (upload to Google Drive instead, and put the link in README.md)
+hindi/data/raw/
+nepali/data/raw/
