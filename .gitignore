@@ -1,7 +1,20 @@
 venv
+.venv
 __pycache__/
 
-# Raw downloaded data is large - keep it out of git.
+# All corpus data is large - keep it out of git.
 # (upload to Google Drive instead, and put the link in README.md)
+#   raw/       source data: downloaded shards + combined manual corpus
+#   interim/   per-stage cleaning checkpoints
+#   processed/ final cleaned corpora, ready for tokenizer training
 hindi/data/raw/
 nepali/data/raw/
+hindi/data/interim/
+nepali/data/interim/
+hindi/data/processed/
+nepali/data/processed/
+
+# fastText language-ID model (131 MB, over GitHub's 100 MB hard limit).
+# Downloaded once by hand, not a project artifact:
+#   curl -L -o lid.176.bin https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
+lid.176.bin
