@@ -13,8 +13,33 @@ hindi/data/interim/
 nepali/data/interim/
 hindi/data/processed/
 nepali/data/processed/
+#   splits/    train/val/test jsonl + the tokenizer's training text (GBs)
+#   bin/       uint16 token memmaps
+hindi/data/splits/
+nepali/data/splits/
+hindi/data/bin/
+nepali/data/bin/
+
+# NOTE: tokenizer/ is deliberately NOT ignored. An earlier version of this file
+# excluded *.model on the assumption they were large binaries -- they are
+# 0.4-1.1 MB, and the brief lists them as required deliverables ("Tokenizer
+# model files (one per language)", plus "Separate tokenizers and vocabularies"
+# in the final checklist). Both tokenizer/ directories together are ~6.6 MB, so
+# the .model, .vocab, sweep_results.json and report.* files are all tracked.
 
 # fastText language-ID model (131 MB, over GitHub's 100 MB hard limit).
 # Downloaded once by hand, not a project artifact:
 #   curl -L -o lid.176.bin https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
 lid.176.bin
+
+# Belt-and-braces for the genuinely large formats, in case data ever lands
+# outside the directories listed above. The tokenizer .model files are
+# SentencePiece protobufs, not *.bin, so these patterns do not catch them.
+*.bin
+*.npy
+*.jsonl.zst
+*.partial
+
+# ...but the corpus statistics are small JSON and worth tracking, so make sure
+# nothing above accidentally excludes them.
+!corpus_stats.json
