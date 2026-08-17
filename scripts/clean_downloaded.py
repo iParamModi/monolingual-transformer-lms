@@ -45,16 +45,17 @@ functions, same design), but thresholds differ deliberately:
 Pipeline (each stage reads the previous stage's output JSONL and writes a new
 one, so any stage can be re-run/resumed independently):
 
-    0 discover + baseline  -- find raw/*.jsonl (excluding wiki/empty/partial),
-                               report what's included/excluded, measure the
-                               combined input with NO physical copy pass (multi-
-                               file streaming, saves a full I/O pass over tens
-                               of GB compared to physically concatenating first)
+    0 discover              -- find raw/*.jsonl (excluding wiki/empty/partial)
+                                and report what's included/excluded. Sources are
+                                streamed as one logical corpus, so there is no
+                                physical concatenation pass.
     1 unicode_normalize     -- NFC + Indic normalize, strip control/zero-width
                                 chars, strip URLs/HTML tags+entities/emails/
                                 @handles, zero-English pass (blank every bare
                                 Latin-letter run, keep digits), repair danda
-                                punctuation, collapse whitespace
+                                punctuation, collapse whitespace. ALSO collects
+                                the raw "before" statistics on the way past,
+                                which used to be its own full streaming pass.
     2 lang_id_filter        -- drop documents fastText's LID model does not
                                 classify as this language, above threshold.
                                 Stricter default threshold than the manual
@@ -63,19 +64,19 @@ one, so any stage can be re-run/resumed independently):
                                 we have surplus volume to afford being picky.
                                 Optional dependency; falls back to pass-through
                                 with a warning if fasttext/model is missing.
-    3 boilerplate_removal   -- drop lines recurring across many documents of
-                                the same named source (two passes). Honest
-                                caveat: "source" here is a whole dataset
-                                (e.g. "mc4"), a huge mix of different sites,
-                                so this is much less targeted than on the
-                                manual (single-site) corpus -- cheap to run,
-                                don't expect it to do much for the big
-                                already-preprocessed public corpora.
-    4 quality_filter        -- Gopher-style filters, STRICT defaults (see
-                                stage_quality_filter): min/max word count,
-                                min Devanagari-script ratio, min sentence-
-                                final punctuation ratio, max within-doc
-                                duplicate line fraction, binary-payload check
+    3 boilerplate_removal   -- OFF BY DEFAULT (--boilerplate to enable). These
+                                corpora store each document as a single line,
+                                measured at 1.0 non-empty line/doc, so a stage
+                                that removes frequently-recurring *lines* has
+                                nothing to grip: it costs two full passes over
+                                13+ GB and removes essentially nothing. What it
+                                could legitimately catch, exact_dedup catches.
+    4 quality_filter        -- Gopher-style filters, all tunable from the CLI:
+                                min/max word count, min Devanagari-script
+                                ratio, min sentence-final punctuation ratio
+                                (default 0.0 -- see --min-terminal-frac), max
+                                within-doc duplicate line fraction, and a
+                                binary-payload signature check
     5 exact_dedup           -- drop exact (whitespace-normalized) duplicate
                                 documents via hash -- also the main defense
                                 against CC-100/mC4/MADLAD/Sangraha overlap
@@ -168,18 +169,26 @@ MULTI_BLANK_LINE_RE = re.compile(r"\n{3,}")
 DOUBLE_DANDA_RE = re.compile(r"\|\|")
 SINGLE_PIPE_RE = re.compile(r"(?<!\|)\|(?!\|)")
 
-HTML_TAG_RE = re.compile(r"<[^>]+>")
-HTML_ENTITY_NUM_RE = re.compile(r"&#\d+;")
-HTML_ENTITY_NAME_RE = re.compile(r"&[a-zA-Z]+;")
-URL_RE = re.compile(r"(?:https?://|www\.)\S+", re.IGNORECASE)
-EMAIL_RE = re.compile(r"\S+@\S+\.\S+")
-HANDLE_RE = re.compile(r"(?<!\w)@\w+")
+# Web/markup artifacts, merged into ONE alternation. These were six separate
+# re.sub() calls; since they all collapse to the same replacement (a space),
+# a single pass over the string does the same job. unicode_normalize is the
+# heaviest stage in the pipeline precisely because it touches the full
+# uncompressed corpus, so cutting six passes to one is the single best
+# speedup available here. Order matters: URL and EMAIL come before the bare
+# @handle rule so a full address is consumed as one unit.
+WEB_ARTIFACT_RE = re.compile(
+    r"<[^>]+>"                      # HTML tags
+    r"|&#\d+;"                      # numeric entities
+    r"|&[a-zA-Z]+;"                 # named entities
+    r"|(?:https?://|www\.)\S+"      # URLs
+    r"|\S+@\S+\.\S+"                # emails
+    r"|(?<!\w)@\w+",                # @handles
+    re.IGNORECASE,
+)
 HASHTAG_MARK_RE = re.compile(r"(?<!\w)#(?=\w)")
 LATIN_ALPHA_RE = re.compile(r"[A-Za-z]+")  # zero-English rule; digits kept
 
 BINARY_SIGNATURES = ("JFIF", "Exif", "%PDF", "Photoshop")
-
-TOKEN_RE = re.compile(r"\w+|[^\w\s]", re.UNICODE)
 
 try:
     from indicnlp.normalize.indic_normalize import IndicNormalizerFactory
@@ -201,25 +210,45 @@ except Exception:
 # Stats helpers
 # --------------------------------------------------------------------------
 
-def text_stats(text: str) -> tuple[int, int, int]:
-    return len(text), len(text.split()), len(TOKEN_RE.findall(text))
-
-
 class Accumulator:
-    __slots__ = ("docs", "chars", "words", "tokens")
+    """Running docs/chars/words totals, optionally split by source.
+
+    Note what is NOT here: the old "naive token" count. It ran
+    TOKEN_RE.findall() on every document at every stage -- allocating a
+    ~1000-element list per document -- and the number it produced was
+    misleading anyway (~3.4x the word count, because the virama splits
+    Devanagari conjuncts into separate matches). Nothing depends on it: the
+    BPE projection in stage_report is words x fertility, and the real token
+    count only exists once SentencePiece has actually been trained. Dropping
+    it removes a full regex scan per document per stage.
+
+    Tracking per-source totals here (rather than re-reading the finished file
+    at the end) removes one more full pass over the output.
+    """
+
+    __slots__ = ("docs", "chars", "words", "by_source")
 
     def __init__(self) -> None:
-        self.docs = self.chars = self.words = self.tokens = 0
+        self.docs = self.chars = self.words = 0
+        self.by_source: dict[str, list[int]] = {}
 
-    def add(self, text: str) -> None:
-        c, w, t = text_stats(text)
+    def add(self, text: str, source: str | None = None) -> None:
+        c = len(text)
+        w = len(text.split())
         self.docs += 1
         self.chars += c
         self.words += w
-        self.tokens += t
+        if source is not None:
+            e = self.by_source.get(source)
+            if e is None:
+                self.by_source[source] = [1, c, w]
+            else:
+                e[0] += 1
+                e[1] += c
+                e[2] += w
 
     def as_dict(self) -> dict:
-        return {"docs": self.docs, "chars": self.chars, "words": self.words, "tokens": self.tokens}
+        return {"docs": self.docs, "chars": self.chars, "words": self.words}
 
 
 def fmt_time(seconds: float) -> str:
@@ -238,9 +267,14 @@ def fmt_time(seconds: float) -> str:
 def fmt_stats(label: str, acc: "Accumulator | dict") -> str:
     d = acc.as_dict() if isinstance(acc, Accumulator) else acc
     return (
-        f"{label:<22} docs={d['docs']:>10,}  chars={d['chars']:>14,}  "
-        f"words={d['words']:>13,}  tokens={d['tokens']:>13,}"
+        f"{label:<24} docs={d['docs']:>10,}  chars={d['chars']:>14,}  "
+        f"words={d['words']:>13,}"
     )
+
+
+def print_by_source(acc: Accumulator) -> None:
+    for src, (n, c, w) in sorted(acc.by_source.items(), key=lambda kv: -kv[1][2]):
+        print(f"    {src:<20} docs={n:>10,}  chars={c:>14,}  words={w:>13,}")
 
 
 # --------------------------------------------------------------------------
@@ -352,14 +386,9 @@ def count_lines_multi(paths: Iterable[Path]) -> int:
 # --------------------------------------------------------------------------
 
 def strip_web_artifacts(text: str) -> str:
-    text = HTML_TAG_RE.sub(" ", text)
-    text = HTML_ENTITY_NUM_RE.sub(" ", text)
-    text = HTML_ENTITY_NAME_RE.sub(" ", text)
-    text = URL_RE.sub(" ", text)
-    text = EMAIL_RE.sub(" ", text)
-    text = HANDLE_RE.sub(" ", text)
-    text = HASHTAG_MARK_RE.sub("", text)
-    text = LATIN_ALPHA_RE.sub(" ", text)  # zero-English rule
+    text = WEB_ARTIFACT_RE.sub(" ", text)  # tags/entities/URLs/emails/handles
+    text = HASHTAG_MARK_RE.sub("", text)   # keep the word, drop the '#'
+    text = LATIN_ALPHA_RE.sub(" ", text)   # zero-English rule
     return text
 
 
@@ -379,23 +408,36 @@ def clean_text_unicode(text: str, indic_normalizer) -> str:
 
 def stage_unicode_normalize(
     in_paths: list[Path], out_path: Path, lang_code: str, progress: PipelineProgress
-) -> Accumulator:
-    progress.start_step("unicode_normalize", note=f"{len(in_paths)} source file(s)")
+) -> tuple[Accumulator, Accumulator]:
+    """Normalize the raw corpus AND collect the raw "before" statistics.
+
+    The baseline numbers used to come from a dedicated stage that streamed the
+    entire raw corpus purely to count things -- ~42 minutes of pure measurement
+    on the Hindi side. This stage already reads exactly those bytes, so the raw
+    stats are accumulated here (before cleaning each document) for free. Returns
+    (baseline_stats, cleaned_stats).
+    """
+    progress.start_step("unicode_normalize", note=f"{len(in_paths)} source file(s), also collects baseline stats")
     total = count_lines_multi(in_paths)
     indic_normalizer = _make_indic_normalizer(lang_code)
+    baseline = Accumulator()
     acc = Accumulator()
     dropped_empty = 0
     with open(out_path, "w", encoding="utf-8") as out:
         for doc in iter_progress(read_jsonl_multi(in_paths), total, progress):
+            source = doc.get("source", "unknown")
+            baseline.add(doc.get("text", ""), source)
             doc["text"] = clean_text_unicode(doc.get("text", ""), indic_normalizer)
             if not doc["text"]:
                 dropped_empty += 1
                 continue
-            acc.add(doc["text"])
+            acc.add(doc["text"], source)
             out.write(json.dumps(doc, ensure_ascii=False) + "\n")
     progress.end_step("unicode_normalize")
     print(f"    dropped (empty after normalize): {dropped_empty:,}")
-    return acc
+    print(fmt_stats("baseline (raw)", baseline))
+    print_by_source(baseline)
+    return baseline, acc
 
 
 # --------------------------------------------------------------------------
@@ -450,9 +492,13 @@ def stage_lang_id_filter(
     lang_code: str,
     model_path: Path,
     threshold: float,
+    total: int,
 ) -> Accumulator:
+    # `total` is passed in from the previous stage's Accumulator rather than
+    # recomputed with count_lines(). Every stage used to re-read its entire
+    # input just to get a denominator for the progress bar -- six redundant
+    # full passes over multi-GB files across the pipeline.
     progress.start_step("lang_id_filter")
-    total = count_lines(in_path)
     model = _load_fasttext_model(model_path)
     acc = Accumulator()
 
@@ -465,7 +511,7 @@ def stage_lang_id_filter(
         )
         with open(out_path, "w", encoding="utf-8") as out:
             for doc in iter_progress(read_jsonl(in_path), total, progress):
-                acc.add(doc.get("text", ""))
+                acc.add(doc.get("text", ""), doc.get("source", "unknown"))
                 out.write(json.dumps(doc, ensure_ascii=False) + "\n")
         progress.end_step("lang_id_filter")
         return acc
@@ -479,7 +525,7 @@ def stage_lang_id_filter(
             sample = text.replace("\n", " ")[:1000]
             label, prob = _predict_top_label(model, sample)
             if label == want and prob >= threshold:
-                acc.add(text)
+                acc.add(text, doc.get("source", "unknown"))
                 out.write(json.dumps(doc, ensure_ascii=False) + "\n")
             else:
                 dropped += 1
@@ -504,13 +550,21 @@ def stage_boilerplate_removal(
     in_path: Path,
     out_path: Path,
     progress: PipelineProgress,
+    total: int,
     line_freq_threshold: float = 0.02,
 ) -> Accumulator:
+    # OFF BY DEFAULT -- enable with --boilerplate. Measurement on the real
+    # corpus showed 1.0 non-empty line per document: these public web corpora
+    # store each document as a single unbroken blob. This stage flags a *line*
+    # that recurs in >2% of a source's documents, so with one line per document
+    # it would have to see the same 500-word article repeated across 2% of the
+    # source before removing anything -- which never happens. It was costing two
+    # full passes over 13+ GB to delete essentially nothing, and anything it
+    # could legitimately catch is caught properly by exact_dedup downstream.
     progress.start_step(
         "boilerplate_removal",
-        note="grouped by dataset name (cc100/mc4/...), not by site -- limited effect expected",
+        note="opt-in; near no-op on single-line documents",
     )
-    total = count_lines(in_path)
 
     line_counts: dict[tuple[str, str], int] = Counter()
     docs_per_source: dict[str, int] = Counter()
@@ -548,7 +602,7 @@ def stage_boilerplate_removal(
             if not doc["text"]:
                 dropped_empty += 1
                 continue
-            acc.add(doc["text"])
+            acc.add(doc["text"], source)
             out.write(json.dumps(doc, ensure_ascii=False) + "\n")
 
     progress.end_step("boilerplate_removal")
@@ -617,24 +671,14 @@ def stage_quality_filter(
     in_path: Path,
     out_path: Path,
     progress: PipelineProgress,
-    # Deliberately STRICTER than scripts/clean_manual.py across the board --
-    # no fragile token floor to protect here, and "I have a lot of tokens".
-    min_words: int = 30,             # manual script uses 10 (caption-sized). Downloaded
-                                      # docs are full web articles/paragraphs, not photo
-                                      # captions, so we can require real substance.
-    max_words: int = 100_000,        # same safety cap as the manual script
-    min_script_ratio: float = 0.75,  # manual script uses 0.70 (compromise for a fragile
-                                      # floor). Here we go to the standard/stricter value --
-                                      # matches Architecture.md's original spec.
-    min_terminal_frac: float = 0.15,  # manual script disables this (0.0) because that
-                                       # corpus is caption-heavy. General web prose
-                                       # (CC-100/mC4/MADLAD/Sangraha) is much more likely
-                                       # to be real sentences, so we re-enable a real check.
-    max_dup_line_frac: float = 0.25,  # manual script uses 0.30; tightened since we can
-                                       # afford to lose more low-value repetitive pages.
+    total: int,
+    min_words: int,
+    max_words: int,
+    min_script_ratio: float,
+    min_terminal_frac: float,
+    max_dup_line_frac: float,
 ) -> Accumulator:
     progress.start_step("quality_filter")
-    total = count_lines(in_path)
     acc = Accumulator()
     reasons: Counter = Counter()
     with open(out_path, "w", encoding="utf-8") as out:
@@ -646,11 +690,13 @@ def stage_quality_filter(
             if reason is not None:
                 reasons[reason] += 1
                 continue
-            acc.add(text)
+            acc.add(text, doc.get("source", "unknown"))
             out.write(json.dumps(doc, ensure_ascii=False) + "\n")
     progress.end_step("quality_filter")
+    kept = acc.docs
     for reason, n in reasons.most_common():
         print(f"    dropped ({reason}): {n:,}")
+    print(f"    kept: {kept:,} / {kept + sum(reasons.values()):,}")
     return acc
 
 
@@ -662,24 +708,28 @@ def norm_key(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def stage_exact_dedup(in_path: Path, out_path: Path, progress: PipelineProgress) -> Accumulator:
+def stage_exact_dedup(
+    in_path: Path, out_path: Path, progress: PipelineProgress, total: int
+) -> Accumulator:
     progress.start_step(
         "exact_dedup",
         note="also catches most CC-100/mC4/MADLAD/Sangraha Common-Crawl overlap",
     )
-    total = count_lines(in_path)
     seen: set = set()
     acc = Accumulator()
     dropped = 0
     with open(out_path, "w", encoding="utf-8") as out:
         for doc in iter_progress(read_jsonl(in_path), total, progress):
             text = doc.get("text", "")
-            h = hashlib.blake2b(norm_key(text).encode("utf-8"), digest_size=16).hexdigest()
+            # digest_size=8 (was 16): a 64-bit digest over a few million
+            # documents has a collision probability far below the error rate of
+            # every other filter here, and halves the set's memory footprint.
+            h = hashlib.blake2b(norm_key(text).encode("utf-8"), digest_size=8).digest()
             if h in seen:
                 dropped += 1
                 continue
             seen.add(h)
-            acc.add(text)
+            acc.add(text, doc.get("source", "unknown"))
             out.write(json.dumps(doc, ensure_ascii=False) + "\n")
     progress.end_step("exact_dedup")
     print(f"    dropped (exact duplicate): {dropped:,}")
@@ -803,12 +853,13 @@ def stage_perplexity_filter(
     abs_max: float | None,
     train_tokens: int,
     max_words: int,
+    total: int,
+    cutoff_sample: int = 200_000,
 ) -> Accumulator:
     progress.start_step(
         "perplexity_filter",
         note=f"n-gram LM trained from scratch (order={order})",
     )
-    total = count_lines(in_path)
 
     lm = NgramLM(order=order)
     if reference_path is not None and reference_path.exists():
@@ -825,7 +876,7 @@ def stage_perplexity_filter(
         acc = Accumulator()
         with open(out_path, "w", encoding="utf-8") as out:
             for doc in iter_progress(read_jsonl(in_path), total, progress):
-                acc.add(doc.get("text", ""))
+                acc.add(doc.get("text", ""), doc.get("source", "unknown"))
                 out.write(json.dumps(doc, ensure_ascii=False) + "\n")
         progress.end_step("perplexity_filter")
         return acc
@@ -835,45 +886,49 @@ def stage_perplexity_filter(
         f"{len(lm.counts[2]):,} kept bigrams"
     )
 
-    # Pass A: score everything, so the cutoff can be a percentile of the real
-    # distribution rather than a magic constant borrowed from another corpus.
-    scores = np.empty(total, dtype=np.float32)
-    n = 0
-    for doc in iter_progress(read_jsonl(in_path), total, progress):
-        if n >= total:
-            break
-        scores[n] = lm.perplexity(doc.get("text", ""), max_words)
-        n += 1
-    scores = scores[:n]
-
-    finite = scores[np.isfinite(scores)]
+    # Establish the cutoff from an evenly-spaced SAMPLE rather than by scoring
+    # the whole corpus first. The previous version made three passes: train,
+    # score-everything, then write. A percentile estimated from ~200k documents
+    # is statistically indistinguishable from one over the full few million --
+    # the sampling error on a 95th percentile at n=200k is a fraction of a
+    # percent -- so this buys back an entire pass for no measurable change in
+    # which documents get dropped. An absolute --ppl-max skips sampling too.
     if abs_max is not None:
         cutoff = float(abs_max)
         basis = f"absolute --ppl-max={abs_max}"
-    elif finite.size:
-        cutoff = float(np.percentile(finite, percentile))
-        basis = f"{percentile:g}th percentile of this corpus"
     else:
-        cutoff = float("inf")
-        basis = "no finite scores -- filter disabled"
-    if finite.size:
-        q = np.percentile(finite, [5, 25, 50, 75, 95])
-        print(
-            f"    perplexity distribution: p5={q[0]:.0f} p25={q[1]:.0f} "
-            f"median={q[2]:.0f} p75={q[3]:.0f} p95={q[4]:.0f}"
-        )
+        step = max(1, total // max(cutoff_sample, 1))
+        sample: list[float] = []
+        for i, doc in enumerate(read_jsonl(in_path)):
+            if i % step:
+                continue
+            v = lm.perplexity(doc.get("text", ""), max_words)
+            if math.isfinite(v):
+                sample.append(v)
+        if sample:
+            arr = np.asarray(sample, dtype=np.float32)
+            cutoff = float(np.percentile(arr, percentile))
+            basis = f"{percentile:g}th percentile of a {arr.size:,}-doc sample (every {step}th)"
+            q = np.percentile(arr, [5, 25, 50, 75, 95])
+            print(
+                f"    perplexity distribution: p5={q[0]:.0f} p25={q[1]:.0f} "
+                f"median={q[2]:.0f} p75={q[3]:.0f} p95={q[4]:.0f}"
+            )
+        else:
+            cutoff = float("inf")
+            basis = "no finite scores -- filter disabled"
     print(f"    cutoff = {cutoff:.0f} ({basis}); documents above this are dropped")
 
-    # Pass B: write the keepers.
+    # Single scoring+writing pass.
     acc = Accumulator()
     dropped = 0
     with open(out_path, "w", encoding="utf-8") as out:
-        for i, doc in enumerate(iter_progress(read_jsonl(in_path), total, progress)):
-            if i >= n or not (scores[i] <= cutoff):
+        for doc in iter_progress(read_jsonl(in_path), total, progress):
+            text = doc.get("text", "")
+            if not (lm.perplexity(text, max_words) <= cutoff):
                 dropped += 1
                 continue
-            text = doc.get("text", "")
-            acc.add(text)
+            acc.add(text, doc.get("source", "unknown"))
             out.write(json.dumps(doc, ensure_ascii=False) + "\n")
     progress.end_step("perplexity_filter")
     print(f"    dropped (high perplexity): {dropped:,}")
@@ -992,12 +1047,12 @@ def stage_near_dedup(
     out_path: Path,
     progress: PipelineProgress,
     interim_dir: Path,
+    total: int,
     threshold: float = 0.85,
     num_perm: int = 64,
     shingle_size: int = 5,
     max_shingles: int = 2048,
 ) -> Accumulator:
-    total = count_lines(in_path)
     bands, rows = _choose_bands_rows(num_perm, threshold)
     achieved = (1.0 / bands) ** (1.0 / rows)
     progress.start_step(
@@ -1044,7 +1099,7 @@ def stage_near_dedup(
                 dropped += 1
                 continue
             text = doc.get("text", "")
-            acc.add(text)
+            acc.add(text, doc.get("source", "unknown"))
             out.write(json.dumps(doc, ensure_ascii=False) + "\n")
     progress.end_step("near_dedup")
     print(f"    dropped (near duplicate, Jaccard ~{achieved:.2f}): {dropped:,}")
@@ -1059,7 +1114,6 @@ def stage_report(
     lang_label: str,
     baseline: Accumulator,
     final: Accumulator,
-    per_source_final: "dict[str, Accumulator]",
     target_tokens: int,
     fertility_low: float,
     fertility_high: float,
@@ -1069,13 +1123,13 @@ def stage_report(
     print(fmt_stats("final (post-cleaning)", final))
     if baseline.docs:
         print(f"doc retention   : {100 * final.docs / baseline.docs:5.1f}%")
-    if baseline.tokens:
-        print(f"token retention : {100 * final.tokens / baseline.tokens:5.1f}% (naive-token basis)")
+    if baseline.words:
+        print(f"word retention  : {100 * final.words / baseline.words:5.1f}%")
 
-    if per_source_final:
+    if final.by_source:
+        # Accumulated during the final stage, not by re-reading the output file.
         print("\nper-source breakdown (final):")
-        for src, acc in sorted(per_source_final.items(), key=lambda kv: -kv[1].tokens):
-            print(f"    {src:<20} {fmt_stats('', acc).strip()}")
+        print_by_source(final)
 
     projected_low = int(final.words * fertility_low)
     projected_high = int(final.words * fertility_high)
@@ -1101,15 +1155,28 @@ def stage_report(
 # Orchestration
 # --------------------------------------------------------------------------
 
+# Relative wall-clock cost per stage, used only to drive the ETA readout.
+#
+# MEASURED, not guessed: throughput was benchmarked on 15k real Hindi documents
+# and cross-checked against a production run. An earlier hand-guessed table had
+# near_dedup at 8.0 -- 45% of the total -- which made the ETA read ~24h during
+# the first stage. Reality is the inverse: the EARLY stages are expensive
+# because they see the full uncompressed corpus, while near_dedup runs on the
+# ~45%-of-original that survives filtering. Cost tracks each stage's INPUT SIZE
+# far more than its algorithmic complexity.
+#
+# Weights below reflect the trimmed pipeline (baseline folded into
+# unicode_normalize; per-stage count_lines and the naive token count removed).
 STAGE_WEIGHTS = {
-    "baseline": 0.5,
-    "unicode_normalize": 1.0,
-    "lang_id_filter": 1.2,
-    "boilerplate_removal": 2.0,
-    "quality_filter": 1.0,
-    "exact_dedup": 1.0,
-    "perplexity_filter": 3.0,  # LM training + 2 scoring passes, all pure Python
-    "near_dedup": 8.0,         # signature build dominates; still the slowest stage
+    "unicode_normalize": 3.00,    # heaviest by far: full corpus, NFC + Indic
+                                   # normalize + regex stripping, and it now
+                                   # carries the baseline stats too
+    "lang_id_filter": 1.60,       # full corpus + per-doc fastText inference
+    "boilerplate_removal": 0.90,  # opt-in only
+    "quality_filter": 1.30,
+    "exact_dedup": 0.50,
+    "perplexity_filter": 0.80,    # sample for cutoff, then one scoring pass
+    "near_dedup": 0.65,           # smallest input of any stage by this point
 }
 
 # (language folder, ISO code) -- folder names match the repo layout.
@@ -1138,6 +1205,12 @@ def clean_language(
     near_dedup_threshold: float,
     near_dedup_num_perm: int,
     near_dedup_shingle: int,
+    do_boilerplate: bool,
+    min_words: int,
+    max_words: int,
+    min_script_ratio: float,
+    min_terminal_frac: float,
+    max_dup_line_frac: float,
 ) -> None:
     data_dir = root / folder / "data"
     raw_dir = data_dir / "raw"
@@ -1158,25 +1231,13 @@ def clean_language(
         print(f"    [skip] {p.name:<35} {reason}")
 
     weights = dict(STAGE_WEIGHTS)
+    if not do_boilerplate:
+        del weights["boilerplate_removal"]
     if skip_ppl_filter:
         del weights["perplexity_filter"]
     if skip_near_dedup:
         del weights["near_dedup"]
     progress = PipelineProgress(lang_label, weights)
-
-    # Stage 0: baseline -- multi-file streaming read, no physical combine pass.
-    progress.start_step("baseline", note=f"{len(kept_files)} source file(s), no combine pass")
-    total0 = count_lines_multi(kept_files)
-    baseline = Accumulator()
-    per_source_baseline: dict[str, Accumulator] = {}
-    for doc in iter_progress(read_jsonl_multi(kept_files), total0, progress):
-        text = doc.get("text", "")
-        baseline.add(text)
-        per_source_baseline.setdefault(doc.get("source", "unknown"), Accumulator()).add(text)
-    progress.end_step("baseline")
-    print(fmt_stats("baseline (raw downloaded)", baseline))
-    for src, acc in sorted(per_source_baseline.items(), key=lambda kv: -kv[1].tokens):
-        print(f"    {src:<20} {fmt_stats('', acc).strip()}")
 
     def maybe_delete(*paths: Path) -> None:
         if delete_intermediate:
@@ -1195,22 +1256,34 @@ def clean_language(
     p6 = interim_dir / "06_dedup_near.jsonl"
     final_path = processed_dir / f"{lang_code}_downloaded_clean.jsonl"
 
-    acc1 = stage_unicode_normalize(kept_files, p1, lang_code, progress)
+    # Stage 1 also produces the baseline "before" stats, so no separate
+    # measurement pass over the raw corpus is needed.
+    baseline, acc1 = stage_unicode_normalize(kept_files, p1, lang_code, progress)
     print(fmt_stats("after unicode_normalize", acc1))
 
-    acc1b = stage_lang_id_filter(p1, p1b, progress, lang_code, lid_model_path, lid_threshold)
+    acc1b = stage_lang_id_filter(
+        p1, p1b, progress, lang_code, lid_model_path, lid_threshold, acc1.docs
+    )
     print(fmt_stats("after lang_id_filter", acc1b))
     maybe_delete(p1)
 
-    acc2 = stage_boilerplate_removal(p1b, p2, progress)
-    print(fmt_stats("after boilerplate_removal", acc2))
-    maybe_delete(p1b)
+    if do_boilerplate:
+        acc2 = stage_boilerplate_removal(p1b, p2, progress, acc1b.docs)
+        print(fmt_stats("after boilerplate_removal", acc2))
+        maybe_delete(p1b)
+    else:
+        p1b.replace(p2)
+        acc2 = acc1b
+        print("    [skip] boilerplate_removal off by default (no-op on single-line docs); --boilerplate to enable")
 
-    acc3 = stage_quality_filter(p2, p3, progress)
+    acc3 = stage_quality_filter(
+        p2, p3, progress, acc2.docs,
+        min_words, max_words, min_script_ratio, min_terminal_frac, max_dup_line_frac,
+    )
     print(fmt_stats("after quality_filter", acc3))
     maybe_delete(p2)
 
-    acc4 = stage_exact_dedup(p3, p4, progress)
+    acc4 = stage_exact_dedup(p3, p4, progress, acc3.docs)
     print(fmt_stats("after exact_dedup", acc4))
     maybe_delete(p3)
 
@@ -1227,7 +1300,7 @@ def clean_language(
         )
         acc5 = stage_perplexity_filter(
             p4, p5, progress, reference_path, ppl_order, ppl_percentile,
-            ppl_max, ppl_train_tokens, ppl_max_words,
+            ppl_max, ppl_train_tokens, ppl_max_words, acc4.docs,
         )
         print(fmt_stats("after perplexity_filter", acc5))
         maybe_delete(p4)
@@ -1238,7 +1311,7 @@ def clean_language(
         print("    [skip] near_dedup disabled via --skip-near-dedup")
     else:
         acc6 = stage_near_dedup(
-            p5, p6, progress, interim_dir,
+            p5, p6, progress, interim_dir, acc5.docs,
             threshold=near_dedup_threshold,
             num_perm=near_dedup_num_perm,
             shingle_size=near_dedup_shingle,
@@ -1248,15 +1321,11 @@ def clean_language(
 
     p6.replace(final_path)
 
-    per_source_final: dict[str, Accumulator] = {}
-    for doc in read_jsonl(final_path):
-        per_source_final.setdefault(doc.get("source", "unknown"), Accumulator()).add(doc.get("text", ""))
-
+    # per-source totals came along with acc6; no re-read of the finished file.
     stage_report(
         lang_label,
         baseline,
         acc6,
-        per_source_final,
         target_tokens=target_tokens,
         fertility_low=1.4,
         fertility_high=2.2,
@@ -1283,6 +1352,15 @@ def main() -> None:
     g.add_argument("--ppl-train-tokens", type=int, default=20_000_000, help="max tokens used to train the LM (default 20M)")
     g.add_argument("--ppl-max-words", type=int, default=300, help="score only the first N words of each document (default 300)")
 
+    g3 = ap.add_argument_group("quality filter thresholds")
+    g3.add_argument("--boilerplate", action="store_true", help="re-enable the boilerplate-removal stage (off by default: measured as a no-op on these single-line documents)")
+    g3.add_argument("--min-words", type=int, default=30, help="drop documents shorter than this (default 30; note CC-100 averages ~17 words/doc and is largely removed by this)")
+    g3.add_argument("--max-words", type=int, default=100_000, help="drop pathologically long documents (default 100000)")
+    g3.add_argument("--min-script-ratio", type=float, default=0.75, help="min fraction of non-space characters that must be Devanagari (default 0.75)")
+    g3.add_argument("--min-terminal-frac", type=float, default=0.0,
+                    help="min fraction of lines ending in Devanagari sentence punctuation. DEFAULT 0.0 (disabled): these corpora store each document as a single line, so this collapses to 'must end in danda' and rejects otherwise-good prose for its final character rather than its quality. Raise it only for multi-line corpora.")
+    g3.add_argument("--max-dup-line-frac", type=float, default=0.25, help="drop documents whose duplicate-line fraction exceeds this (default 0.25; inert on single-line documents)")
+
     g2 = ap.add_argument_group("near dedup (stage 7)")
     g2.add_argument("--near-dedup-threshold", type=float, default=0.85, help="target Jaccard similarity for near-duplicates (default 0.85)")
     g2.add_argument("--near-dedup-num-perm", type=int, default=64, help="MinHash permutations (default 64; lower = faster + smaller signature cache)")
@@ -1304,6 +1382,8 @@ def main() -> None:
             args.ppl_percentile, args.ppl_max, args.ppl_train_tokens,
             args.ppl_max_words, args.near_dedup_threshold,
             args.near_dedup_num_perm, args.near_dedup_shingle,
+            args.boilerplate, args.min_words, args.max_words,
+            args.min_script_ratio, args.min_terminal_frac, args.max_dup_line_frac,
         )
     print(f"\nTotal wall-clock time: {fmt_time(time.perf_counter() - pipeline_t0)}")
 
