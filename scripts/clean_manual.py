@@ -25,8 +25,7 @@ one, so any stage can be re-run/resumed independently):
                                 chars, strip URLs/HTML tags+entities/emails/
                                 @handles (keep hashtag word, drop the '#'),
                                 then a zero-English pass that blanks every
-                                remaining bare Latin-letter run (adopted from
-                                the friend's pipeline -- digits are kept),
+                                remaining bare Latin-letter run,
                                 repair danda punctuation, collapse whitespace
     2 lang_id_filter        -- drop documents fastText's LID model does not
                                 classify as this language (hi/ne share
@@ -311,7 +310,7 @@ def strip_web_artifacts(text: str) -> str:
     text = EMAIL_RE.sub(" ", text)
     text = HANDLE_RE.sub(" ", text)
     text = HASHTAG_MARK_RE.sub("", text)
-    # Zero-English rule (adopted from the friend's pipeline): any remaining
+    # Zero-English rule : any remaining
     # bare Latin letters -- code-switched English words/phrases, not just
     # markup -- are stripped too. Runs before lang_id_filter (stage 2) and
     # quality_filter (stage 4), so both see already-purified text: LID isn't
@@ -591,11 +590,11 @@ def stage_quality_filter(
     # Every default below is the result of comparing our original (token-floor-
     # protective) values against the friend's pipeline's values and picking per
     # metric, not wholesale adopting either side -- see chat discussion.
-    min_words: int = 10,             # adopted from friend's pipeline (was chars>=150,
+    min_words: int = 10,             # (was chars>=150,
                                       # stricter than his words>=10 in practice).
                                       # Preserves short captions/headlines, which this
                                       # corpus is full of -- directly helps the token floor.
-    max_words: int = 100_000,        # adopted from friend's pipeline (we had no cap).
+    max_words: int = 100_000,        # (we had no cap).
                                       # Only trims pathological giant/garbage docs;
                                       # negligible cost to the token floor.
     min_script_ratio: float = 0.70,  # compromise: ours was 0.60 (token-floor-safe but
@@ -604,11 +603,11 @@ def stage_quality_filter(
                                       # Latin letters before this check runs, so it no
                                       # longer has to absorb English contamination --
                                       # it's now mainly catching other-script/junk residue.
-    min_terminal_frac: float = 0.0,  # adopted from friend's pipeline (was 0.15). This
+    min_terminal_frac: float = 0.0,  # (was 0.15). This
                                       # corpus is caption/headline-heavy and those
                                       # legitimately don't end in danda punctuation --
                                       # the old threshold was rejecting valid content.
-    max_dup_line_frac: float = 0.30,  # adopted from friend's pipeline (was 0.40).
+    max_dup_line_frac: float = 0.30,  # (was 0.40).
                                        # Duplicate-heavy docs contribute little unique
                                        # content anyway, so tightening this costs little.
 ) -> Accumulator:

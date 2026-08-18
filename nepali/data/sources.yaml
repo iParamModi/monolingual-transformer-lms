@@ -1,0 +1,147 @@
+# Model L -- Nepali (from the permitted lower-resource list). Manual-collection
+# source registry for Phase 1.
+#
+# Selection rationale (report/phase1.md §1): of the ten permitted languages,
+# Nepali has by far the largest public footprint -- sizeable CC-100 / CulturaX /
+# mC4 slices, a ~30k-article Wikipedia, and an active digital news industry. It
+# is the only one where approaching the 500M-token target is plausible.
+#
+# Known risk, handled by the language-ID stage of scripts/clean_manual.py:
+# Nepali shares the Devanagari script and much Sanskrit-derived vocabulary with
+# Hindi (Model H), and the `ne` slices of CC-100 and mC4 are known to contain
+# Hindi, Bhojpuri and Maithili text. Language ID and cross-corpus dedup are
+# therefore mandatory, not optional. Note also that www.bbc.com appears in both
+# languages' registries, serving different paths -- a further reason the merge
+# filters on the `lang` field rather than trusting the domain.
+#
+# Scope: the MANUAL side only. The downloaded side is defined in code, in the
+# SOURCES list of nepali/data/download_all.py, which is the authority for it.
+#
+# Read by scripts/crawl_manual.py:
+#   root      where discovery starts for that site
+#   domain    used to fold the two `source` spellings in the shards onto one
+#             label, and as the robots.txt / rate-limit key
+#   category  crawl priority (see category_priority) and the register-mix table
+
+language: nepali
+lang_code: ne
+rps_per_domain: 1.5
+
+# --- Crawl priority -----------------------------------------------------------
+# Same mechanism as the Hindi registry: every domain runs concurrently, and this
+# order sets each one's share of the queue rather than its turn. The Nepali
+# frontier is mostly news and encyclopedia, so the thinner registers are
+# weighted up and news is weighted down.
+category_priority:
+  - sports
+  - current_affairs
+  - magazine
+  - education
+  - poetry
+  - literature
+  - encyclopedia
+  - news
+
+# Nepali outlets yield roughly 30-60% of the per-domain volume of Hindi ones, so
+# more domains are seeded and archives are crawled deeper.
+#
+# Every `domain` below is unique: crawl_manual.py keys the source map by domain,
+# so two entries sharing one domain would silently collapse into a single label.
+# To add a sub-section of a site already listed, widen that entry's `root`.
+manual_sites:
+  - name: ekantipur           # largest Nepali daily online; deepest archive
+    domain: ekantipur.com
+    root: https://ekantipur.com
+    category: news
+  - name: onlinekhabar
+    domain: www.onlinekhabar.com
+    root: https://www.onlinekhabar.com
+    category: news
+  - name: setopati
+    domain: www.setopati.com
+    root: https://www.setopati.com
+    category: news
+  - name: ratopati
+    domain: www.ratopati.com
+    root: https://www.ratopati.com
+    category: news
+  - name: nagariknews
+    domain: nagariknews.nagariknetwork.com
+    root: https://nagariknews.nagariknetwork.com
+    category: news
+  - name: bbc_nepali
+    domain: www.bbc.com
+    root: https://www.bbc.com/nepali
+    category: news
+
+  - name: himalkhabar         # long-form magazine journalism
+    domain: www.himalkhabar.com
+    root: https://www.himalkhabar.com
+    category: magazine
+  - name: wikisource_ne       # Devkota and other public-domain literature
+    domain: ne.wikisource.org
+    root: https://ne.wikisource.org
+    category: literature
+  - name: wikipedia_ne        # encyclopedia articles via the MediaWiki Action API
+    domain: ne.wikipedia.org
+    root: https://ne.wikipedia.org
+    category: encyclopedia
+  - name: sahityaras          # open Nepali literature and literary works
+    domain: sahityasangraha.com
+    root: https://sahityasangraha.com
+    category: literature
+
+  # --- current affairs ---
+  - name: baahrakhari
+    domain: www.baahrakhari.com
+    root: https://www.baahrakhari.com
+    category: current_affairs
+  - name: deshsanchar
+    domain: deshsanchar.com
+    root: https://deshsanchar.com
+    category: current_affairs
+  - name: nepallive
+    domain: nepallive.com
+    root: https://nepallive.com
+    category: current_affairs
+  - name: himalpress
+    domain: himalpress.com
+    root: https://himalpress.com
+    category: current_affairs
+
+  # --- sports ---
+  - name: goalnepal           # largest Nepali-language football desk
+    domain: www.goalnepal.com
+    root: https://www.goalnepal.com
+    category: sports
+  - name: sportsnepal
+    domain: sportsnepal.com.np
+    root: https://sportsnepal.com.np
+    category: sports
+  - name: khelkhabar
+    domain: www.khelkhabar.com
+    root: https://www.khelkhabar.com
+    category: sports
+
+  # --- education ---
+  - name: wikibooks_ne        # MediaWiki, handled by the same Action API path
+    domain: ne.wikibooks.org
+    root: https://ne.wikibooks.org
+    category: education
+
+  # --- magazine ---
+  - name: shilapatra
+    domain: www.shilapatra.com
+    root: https://www.shilapatra.com
+    category: magazine
+  - name: ukeraa
+    domain: www.ukeraa.com
+    root: https://www.ukeraa.com
+    category: magazine
+  - name: nepalkhabar
+    domain: www.nepalkhabar.com
+    root: https://www.nepalkhabar.com
+    category: magazine
+
+# NOTE: kathmandupost.com and spotlightnepal.com publish in ENGLISH despite the
+# Kantipur-family branding. Deliberately not seeded.

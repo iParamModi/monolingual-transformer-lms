@@ -1,0 +1,150 @@
+# Model H -- Hindi. Manual-collection source registry for Phase 1.
+#
+# Language justification (report/phase1.md §1): Hindi is the highest-resource
+# non-English Indian language by public text volume -- the largest Devanagari
+# Wikipedia, the biggest slices in IndicCorp v2 / Sangraha / CulturaX, and a
+# large online news industry with deep, sitemap-exposed archives. That makes the
+# ~500M-token target reachable and gives a genuine contrast against Model L.
+#
+# Scope: the MANUAL side only -- the sites we crawl ourselves. The downloaded
+# side (CC-100, Sangraha verified + unverified, mC4, MADLAD-400) is defined in
+# code, in the SOURCES list of hindi/data/download_all.py, which is the
+# authority for it. Nothing in this file describes downloaded data.
+#
+# Read by scripts/crawl_manual.py:
+#   root      where discovery starts for that site
+#   domain    used to fold the two `source` spellings in the shards onto one
+#             label, and as the robots.txt / rate-limit key
+#   category  crawl priority (see category_priority) and the register-mix table
+
+language: hindi
+lang_code: hi
+rps_per_domain: 1.5
+
+# --- Crawl priority -----------------------------------------------------------
+# All domains are crawled concurrently -- separate hosts do not contend, so
+# idling any of them only wastes wall clock. This list controls each domain's
+# SHARE of the queue, not its turn.
+#
+# The frontier is dominated by a handful of enormous news archives (amarujala
+# alone was ~47% of the Hindi crawl). Without weighting, the smaller registers
+# would be a rounding error and Model H would only ever learn to write news --
+# which shows up directly in Phase-2 generation samples.
+category_priority:
+  - sports
+  - current_affairs
+  - magazine
+  - education
+  - poetry
+  - literature
+  - encyclopedia
+  - news
+
+# --- Manual collection --------------------------------------------------------
+# Budget: ~900 tokens/article, ~65% survive cleaning + dedup
+#   -> ~170k fetched URLs for ~100M manual tokens.
+#
+# Every `domain` below is unique on purpose: crawl_manual.py keys the source map
+# by domain, so two entries sharing one domain would silently collapse into a
+# single label. To add a sub-section of a site already listed, widen that entry's
+# `root` -- never add a second entry for the same domain.
+manual_sites:
+  - name: bbc_hindi          # cleanest markup, proofread text, stable URLs
+    domain: www.bbc.com
+    root: https://www.bbc.com/hindi
+    category: news
+  - name: jagran
+    domain: www.jagran.com
+    root: https://www.jagran.com
+    category: news
+  - name: amarujala
+    domain: www.amarujala.com
+    root: https://www.amarujala.com
+    category: news
+  - name: navbharattimes
+    domain: navbharattimes.indiatimes.com
+    root: https://navbharattimes.indiatimes.com
+    category: news
+  - name: livehindustan
+    domain: www.livehindustan.com
+    root: https://www.livehindustan.com
+    category: news
+
+  # Non-news register diversity: a news-only corpus produces a model that can
+  # only write news.
+  - name: wikisource_hi      # public-domain literary prose (Premchand etc.)
+    domain: hi.wikisource.org
+    root: https://hi.wikisource.org
+    category: literature
+  - name: wikipedia_hi       # encyclopedia articles via the MediaWiki Action API
+    domain: hi.wikipedia.org
+    root: https://hi.wikipedia.org
+    category: encyclopedia
+  - name: kavitakosh
+    domain: www.kavitakosh.org
+    root: http://www.kavitakosh.org
+    category: poetry
+
+  # --- current affairs: analysis and long-form, distinct from daily news ---
+  - name: thewirehindi
+    domain: thewirehindi.com
+    root: https://thewirehindi.com
+    category: current_affairs
+  - name: satyagrah
+    domain: satyagrah.scroll.in
+    root: https://satyagrah.scroll.in
+    category: current_affairs
+  - name: newslaundry_hi
+    domain: hindi.newslaundry.com
+    root: https://hindi.newslaundry.com
+    category: current_affairs
+  - name: aajtak
+    domain: www.aajtak.in
+    root: https://www.aajtak.in
+    category: current_affairs
+
+  # --- sports: match reports and commentary; a register news alone misses ---
+  - name: cricbuzz_hi
+    domain: hindi.cricbuzz.com
+    root: https://hindi.cricbuzz.com
+    category: sports
+  - name: sportskeeda_hi
+    domain: hindi.sportskeeda.com
+    root: https://hindi.sportskeeda.com
+    category: sports
+  - name: khelnow_hi
+    domain: khelnow.com
+    root: https://khelnow.com/hindi
+    category: sports
+
+  # --- education: expository prose, the register closest to Phase-3 reasoning ---
+  - name: wikibooks_hi       # MediaWiki, handled by the same Action API path
+    domain: hi.wikibooks.org
+    root: https://hi.wikibooks.org
+    category: education
+  - name: jagranjosh
+    domain: www.jagranjosh.com
+    root: https://www.jagranjosh.com
+    category: education
+  - name: hindisamay         # MGAHV literature and criticism portal
+    domain: www.hindisamay.com
+    root: http://www.hindisamay.com
+    category: education
+
+  # --- magazine: long-form features and essays ---
+  - name: thelallantop
+    domain: www.thelallantop.com
+    root: https://www.thelallantop.com
+    category: magazine
+  - name: hindwi             # Rekhta's Hindi literature archive
+    domain: www.hindwi.org
+    root: https://www.hindwi.org
+    category: magazine
+  - name: forwardpress
+    domain: www.forwardpress.in
+    root: https://www.forwardpress.in
+    category: magazine
+  - name: outlookhindi
+    domain: www.outlookhindi.com
+    root: https://www.outlookhindi.com
+    category: magazine
