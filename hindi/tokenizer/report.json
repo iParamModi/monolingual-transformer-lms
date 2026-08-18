@@ -1,0 +1,474 @@
+{
+  "combine": {
+    "mode": "token-target",
+    "keep_p": 0.3731538029023676,
+    "manual_words_available": 53678691,
+    "manual_words_effective": 53678691,
+    "downloaded_words_available": 997797163,
+    "upsample_manual": 1.0,
+    "assumed_fertility": 1.4671,
+    "target_train_tokens": 500000000,
+    "projected_corpus_words": 426010496,
+    "projected_train_tokens": 500000000,
+    "projected_manual_frac": 0.126,
+    "downloaded_keep_prob": 0.373154,
+    "target_manual_frac": 0.22,
+    "split_fractions": {
+      "train": 0.8,
+      "val": 0.1,
+      "test": 0.1
+    },
+    "seed": 1337,
+    "tokenizer_training_sentences": 12924512,
+    "splits": {
+      "train": {
+        "docs": 641920,
+        "words": 341053026,
+        "manual_docs": 111631,
+        "manual_words": 43038371,
+        "downloaded_docs": 530289,
+        "downloaded_words": 298014655,
+        "manual_word_frac": 0.1262
+      },
+      "val": {
+        "docs": 80701,
+        "words": 42798849,
+        "manual_docs": 14129,
+        "manual_words": 5425466,
+        "downloaded_docs": 66572,
+        "downloaded_words": 37373383,
+        "manual_word_frac": 0.1268
+      },
+      "test": {
+        "docs": 80118,
+        "words": 42516577,
+        "manual_docs": 13912,
+        "manual_words": 5214854,
+        "downloaded_docs": 66206,
+        "downloaded_words": 37301723,
+        "manual_word_frac": 0.1227
+      }
+    }
+  },
+  "sweep": {
+    "sweep": [
+      {
+        "vocab_size": 5000,
+        "fertility": 1.9145,
+        "unk_rate": 8.18e-06,
+        "unk_count": 129,
+        "chars_per_token": 2.661,
+        "eval_tokens": 15771722,
+        "eval_words": 8238174
+      },
+      {
+        "vocab_size": 8000,
+        "fertility": 1.5569,
+        "unk_rate": 1.006e-05,
+        "unk_count": 129,
+        "chars_per_token": 3.2722,
+        "eval_tokens": 12825788,
+        "eval_words": 8238174
+      },
+      {
+        "vocab_size": 10000,
+        "fertility": 1.4675,
+        "unk_rate": 1.067e-05,
+        "unk_count": 129,
+        "chars_per_token": 3.4715,
+        "eval_tokens": 12089606,
+        "eval_words": 8238174
+      }
+    ],
+    "chosen_vocab": 10000,
+    "selection_rule": "smallest vocab >= 5,000 within 5% fertility of the best (1.468)"
+  },
+  "meta": {
+    "language": "hindi",
+    "lang_code": "hi",
+    "tokenizer_model": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\hindi\\tokenizer\\hi_bpe_10000.model",
+    "tokenizer_model_relative": "hindi/tokenizer/hi_bpe_10000.model",
+    "vocab_size": 10000,
+    "special_ids": {
+      "pad": 0,
+      "unk": 1,
+      "bos": 2,
+      "eos": 3
+    },
+    "dtype": "uint16",
+    "splits": {
+      "train": {
+        "tokens": 479808984,
+        "unk_tokens": 2529,
+        "unk_rate": 5.2708e-06,
+        "manual_tokens": 64596209,
+        "downloaded_tokens": 415212775,
+        "manual_token_frac": 0.1346,
+        "bin": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\hindi\\data\\bin\\train.bin",
+        "bin_relative": "hindi/data/bin/train.bin",
+        "dtype": "uint16"
+      },
+      "val": {
+        "tokens": 60226406,
+        "unk_tokens": 440,
+        "unk_rate": 7.3058e-06,
+        "manual_tokens": 8182852,
+        "downloaded_tokens": 52043554,
+        "manual_token_frac": 0.1359,
+        "bin": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\hindi\\data\\bin\\val.bin",
+        "bin_relative": "hindi/data/bin/val.bin",
+        "dtype": "uint16"
+      },
+      "test": {
+        "tokens": 59778539,
+        "unk_tokens": 711,
+        "unk_rate": 1.18939e-05,
+        "manual_tokens": 7811956,
+        "downloaded_tokens": 51966583,
+        "manual_token_frac": 0.1307,
+        "bin": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\hindi\\data\\bin\\test.bin",
+        "bin_relative": "hindi/data/bin/test.bin",
+        "dtype": "uint16"
+      }
+    },
+    "token_frequency": {
+      "vocab_size": 10000,
+      "distinct_tokens_used": 9998,
+      "unused_tokens": 2,
+      "singleton_tokens": 471,
+      "top1000_coverage": 0.7252,
+      "top20": [
+        {
+          "id": 11,
+          "piece": "▁के",
+          "count": 13509005
+        },
+        {
+          "id": 6530,
+          "piece": "।",
+          "count": 10886023
+        },
+        {
+          "id": 9,
+          "piece": "▁है",
+          "count": 10529626
+        },
+        {
+          "id": 22,
+          "piece": "▁में",
+          "count": 9916233
+        },
+        {
+          "id": 6535,
+          "piece": ",",
+          "count": 9426933
+        },
+        {
+          "id": 26,
+          "piece": "▁की",
+          "count": 7811098
+        },
+        {
+          "id": 31,
+          "piece": "▁से",
+          "count": 6272882
+        },
+        {
+          "id": 29,
+          "piece": "▁को",
+          "count": 6096684
+        },
+        {
+          "id": 42,
+          "piece": "▁और",
+          "count": 5784593
+        },
+        {
+          "id": 39,
+          "piece": "▁का",
+          "count": 4951935
+        },
+        {
+          "id": 52,
+          "piece": "▁हैं",
+          "count": 4240015
+        },
+        {
+          "id": 46,
+          "piece": "▁पर",
+          "count": 3731135
+        },
+        {
+          "id": 6545,
+          "piece": ".",
+          "count": 3654518
+        },
+        {
+          "id": 62,
+          "piece": "▁ने",
+          "count": 3278182
+        },
+        {
+          "id": 36,
+          "piece": "▁कि",
+          "count": 3091393
+        },
+        {
+          "id": 68,
+          "piece": "▁एक",
+          "count": 2919640
+        },
+        {
+          "id": 70,
+          "piece": "▁भी",
+          "count": 2780891
+        },
+        {
+          "id": 81,
+          "piece": "▁लिए",
+          "count": 2635630
+        },
+        {
+          "id": 90,
+          "piece": "▁नहीं",
+          "count": 2301869
+        },
+        {
+          "id": 6552,
+          "piece": "-",
+          "count": 2256288
+        }
+      ]
+    },
+    "manual_requirement": {
+      "threshold": 0.2,
+      "achieved_train": 0.1346,
+      "satisfied": false
+    }
+  },
+  "examples": [
+    {
+      "text": ": ट्रक ड्राइवर से वसूली करते एआरटीओ के सिपाही का वीडियो वायरल",
+      "pieces": [
+        "▁:",
+        "▁ट्रक",
+        "▁ड्राइवर",
+        "▁से",
+        "▁व",
+        "सू",
+        "ली",
+        "▁करते",
+        "▁ए",
+        "आर",
+        "टी",
+        "ओ",
+        "▁के",
+        "▁सि",
+        "पा",
+        "ही",
+        "▁का",
+        "▁वीडियो",
+        "▁वायरल"
+      ],
+      "ids": [
+        356,
+        4884,
+        6187,
+        31,
+        21,
+        1984,
+        129,
+        268,
+        47,
+        1050,
+        210,
+        6562,
+        11,
+        198,
+        286,
+        56,
+        39,
+        1022,
+        2540
+      ],
+      "n_words": 12,
+      "n_tokens": 19,
+      "fertility": 1.58,
+      "roundtrip_ok": true
+    },
+    {
+      "text": "सात दिवसीय आवासीय कैंप का शुभारंभ\nहरिद्वार, संवाददाता।",
+      "pieces": [
+        "▁सात",
+        "▁दिव",
+        "सीय",
+        "▁आ",
+        "वासी",
+        "य",
+        "▁कैंप",
+        "▁का",
+        "▁शु",
+        "भार",
+        "ंभ",
+        "▁हरि",
+        "द्व",
+        "ार",
+        ",",
+        "▁संवाददाता",
+        "।"
+      ],
+      "ids": [
+        2188,
+        1471,
+        4617,
+        27,
+        1441,
+        6521,
+        6133,
+        39,
+        701,
+        1543,
+        1685,
+        4548,
+        2388,
+        12,
+        6535,
+        4183,
+        6530
+      ],
+      "n_words": 8,
+      "n_tokens": 17,
+      "fertility": 2.12,
+      "roundtrip_ok": false
+    },
+    {
+      "text": "सोना 50 रुपये ट्रटा, चांदी में 450 रुपये का नुकसान\nनई दिल्ली, एजेंसी।",
+      "pieces": [
+        "▁सोना",
+        "▁50",
+        "▁रुपये",
+        "▁ट्र",
+        "टा",
+        ",",
+        "▁चा",
+        "ंदी",
+        "▁में",
+        "▁4",
+        "50",
+        "▁रुपये",
+        "▁का",
+        "▁नुकसान",
+        "▁नई",
+        "▁दिल्ली",
+        ",",
+        "▁एजेंसी",
+        "।"
+      ],
+      "ids": [
+        4346,
+        1760,
+        804,
+        694,
+        419,
+        6535,
+        1305,
+        916,
+        22,
+        451,
+        2403,
+        804,
+        39,
+        1821,
+        910,
+        624,
+        6535,
+        3705,
+        6530
+      ],
+      "n_words": 13,
+      "n_tokens": 19,
+      "fertility": 1.46,
+      "roundtrip_ok": false
+    },
+    {
+      "text": "दहेज नहीं मिलने पर विवाहिता को पीटा\nरुड़की।",
+      "pieces": [
+        "▁दह",
+        "ेज",
+        "▁नहीं",
+        "▁मिलने",
+        "▁पर",
+        "▁विवाह",
+        "िता",
+        "▁को",
+        "▁पी",
+        "टा",
+        "▁रु",
+        "ड़की",
+        "।"
+      ],
+      "ids": [
+        5092,
+        665,
+        90,
+        1606,
+        46,
+        2978,
+        811,
+        29,
+        347,
+        419,
+        424,
+        6456,
+        6530
+      ],
+      "n_words": 8,
+      "n_tokens": 13,
+      "fertility": 1.62,
+      "roundtrip_ok": false
+    },
+    {
+      "text": "इस जीवनी लेख में सत्यापन हेतु अतिरिक्त सन्दर्भों की आवश्यकता है।",
+      "pieces": [
+        "▁इस",
+        "▁जीव",
+        "नी",
+        "▁लेख",
+        "▁में",
+        "▁सत्या",
+        "पन",
+        "▁हेतु",
+        "▁अतिरिक्त",
+        "▁सन्",
+        "दर्भ",
+        "ों",
+        "▁की",
+        "▁आवश्यकता",
+        "▁है",
+        "।"
+      ],
+      "ids": [
+        58,
+        2479,
+        96,
+        1107,
+        22,
+        5457,
+        955,
+        3188,
+        2075,
+        2760,
+        3117,
+        24,
+        26,
+        1183,
+        9,
+        6530
+      ],
+      "n_words": 11,
+      "n_tokens": 16,
+      "fertility": 1.45,
+      "roundtrip_ok": true
+    }
+  ]
+}
