@@ -15,10 +15,19 @@ hindi/data/processed/
 nepali/data/processed/
 #   splits/    train/val/test jsonl + the tokenizer's training text (GBs)
 #   bin/       uint16 token memmaps
-hindi/data/splits/
-nepali/data/splits/
-hindi/data/bin/
-nepali/data/bin/
+# Note the "/*" rather than "/": git cannot re-include a file whose PARENT
+# DIRECTORY is excluded, so "hindi/data/splits/" would make the "!" lines below
+# dead letters. Excluding the directory's *contents* instead lets git descend
+# and evaluate the negations, which is what keeps the small JSON manifests
+# (split definitions, corpus metadata) tracked while the GB-scale data is not.
+hindi/data/splits/*
+!hindi/data/splits/combine_info.json
+nepali/data/splits/*
+!nepali/data/splits/combine_info.json
+hindi/data/bin/*
+!hindi/data/bin/meta.json
+nepali/data/bin/*
+!nepali/data/bin/meta.json
 
 # NOTE: tokenizer/ is deliberately NOT ignored. An earlier version of this file
 # excluded *.model on the assumption they were large binaries -- they are

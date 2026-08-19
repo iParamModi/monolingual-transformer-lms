@@ -1,0 +1,51 @@
+{
+  "mode": "token-target",
+  "keep_p": 0.3731538029023676,
+  "manual_words_available": 53678691,
+  "manual_words_effective": 53678691,
+  "downloaded_words_available": 997797163,
+  "upsample_manual": 1.0,
+  "assumed_fertility": 1.4671,
+  "target_train_tokens": 500000000,
+  "projected_corpus_words": 426010496,
+  "projected_train_tokens": 500000000,
+  "projected_manual_frac": 0.126,
+  "downloaded_keep_prob": 0.373154,
+  "target_manual_frac": 0.22,
+  "split_fractions": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "seed": 1337,
+  "tokenizer_training_sentences": 12924512,
+  "splits": {
+    "train": {
+      "docs": 641920,
+      "words": 341053026,
+      "manual_docs": 111631,
+      "manual_words": 43038371,
+      "downloaded_docs": 530289,
+      "downloaded_words": 298014655,
+      "manual_word_frac": 0.1262
+    },
+    "val": {
+      "docs": 80701,
+      "words": 42798849,
+      "manual_docs": 14129,
+      "manual_words": 5425466,
+      "downloaded_docs": 66572,
+      "downloaded_words": 37373383,
+      "manual_word_frac": 0.1268
+    },
+    "test": {
+      "docs": 80118,
+      "words": 42516577,
+      "manual_docs": 13912,
+      "manual_words": 5214854,
+      "downloaded_docs": 66206,
+      "downloaded_words": 37301723,
+      "manual_word_frac": 0.1227
+    }
+  }
+}
