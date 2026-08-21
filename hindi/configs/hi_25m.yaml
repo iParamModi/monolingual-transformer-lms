@@ -1,0 +1,16 @@
+# Model H - Hindi. Decoder-only Transformer, ~25M trainable parameters.
+# Vocabulary comes from Phase 1: hindi/tokenizer/hi_bpe_10000.model
+name: hi_25m
+lang: hi
+vocab_size: 10000
+d_model: 512
+n_layers: 6
+n_heads: 8               # d_head = 64
+d_ff: 2048               # 4 x d_model
+max_seq_len: 512         # learned positional embeddings => hard context cap
+dropout: 0.1
+attn_dropout: 0.1
+tie_weights: true
+pos_encoding: learned    # learned | none  ("none" is the bonus ablation)
+bias: false              # no bias on attention projections; the FFN keeps its biases
+init_std: 0.02
