@@ -11,7 +11,22 @@ from __future__ import annotations
 
 from collections import Counter
 
-import sacrebleu
+
+def _sacrebleu():
+    """Import sacrebleu on first use, with an actionable error if it is absent.
+
+    Imported lazily rather than at module scope so that ROUGE-L, distinct-n and
+    repetition -- none of which need it -- stay usable without the dependency.
+    Otherwise a missing sacrebleu aborts collection of the whole test suite and
+    blocks figure generation, neither of which involves BLEU or chrF++.
+    """
+    try:
+        import sacrebleu
+    except ImportError as exc:  # pragma: no cover -- environment-dependent
+        raise ImportError(
+            "BLEU and chrF++ need sacrebleu: pip install sacrebleu"
+        ) from exc
+    return sacrebleu
 
 
 def corpus_bleu4(hyps: list[str], refs: list[str]) -> float:
@@ -31,7 +46,7 @@ def corpus_bleu4(hyps: list[str], refs: list[str]) -> float:
     Returns:
         BLEU-4 score, 0-100.
     """
-    return sacrebleu.corpus_bleu(hyps, [refs], tokenize="intl").score
+    return _sacrebleu().corpus_bleu(hyps, [refs], tokenize="intl").score
 
 
 def corpus_chrf_pp(hyps: list[str], refs: list[str]) -> float:
@@ -49,7 +64,7 @@ def corpus_chrf_pp(hyps: list[str], refs: list[str]) -> float:
     Returns:
         chrF++ score, 0-100.
     """
-    return sacrebleu.corpus_chrf(hyps, [refs], word_order=2).score
+    return _sacrebleu().corpus_chrf(hyps, [refs], word_order=2).score
 
 
 def _lcs_length(a: list[str], b: list[str]) -> int:
