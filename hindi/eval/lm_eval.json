@@ -1,0 +1,25 @@
+{
+  "val": {
+    "cross_entropy": 3.273279410862483,
+    "perplexity": 26.397766673219877,
+    "tokens": 60226048
+  },
+  "test": {
+    "cross_entropy": 3.271881610076997,
+    "perplexity": 26.360893630816477,
+    "tokens": 59778048
+  },
+  "bpb": {
+    "bpb": 0.5447658047843639,
+    "total_nats": 5920590.776202168,
+    "total_bytes": 15679411,
+    "total_tokens": 1869336,
+    "bytes_per_token": 8.387690067489205,
+    "docs": 2000
+  },
+  "unigram_baseline": {
+    "cross_entropy": 7.211694865345121,
+    "perplexity": 1355.1871818300444,
+    "tokens": 59778539
+  }
+}
