@@ -41,6 +41,18 @@ nepali/data/bin/*
 #   curl -L -o lid.176.bin https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
 lid.176.bin
 
+# Model checkpoints. 278 MB for a full one, 93 MB for a weights-only export --
+# the first is over GitHub's 100 MB hard limit and the brief says large
+# artifacts belong on Drive with links in the README. The convention is
+# {lang}/checkpoints/ for pretrained and {lang}/checkpoints_ft/ for finetuned;
+# both are ignored, and so is anything else that lands as a .pt.
+*.pt
+hindi/checkpoints/
+nepali/checkpoints/
+hindi/checkpoints_ft/
+nepali/checkpoints_ft/
+outputs/
+
 # Belt-and-braces for the genuinely large formats, in case data ever lands
 # outside the directories listed above. The tokenizer .model files are
 # SentencePiece protobufs, not *.bin, so these patterns do not catch them.

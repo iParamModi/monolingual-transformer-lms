@@ -1,0 +1,49 @@
+# Model L - Nepali. Reasoning-finetuning hyperparameters (Phase 3).
+#
+# The ARCHITECTURE is deliberately not here. It travels inside the checkpoint
+# named by `init`, so a finetuning run can never re-specify the model it is
+# loading and disagree with it. ne_25m.yaml remains the record of the
+# architecture; this file is the record of the finetuning run.
+#
+# Every value below is identical to hindi/configs/hi_ft.yaml apart from the
+# three paths and the language code. That is the point: if the two models'
+# reasoning results differ, it is the data, not the budget.
+name: ne_ft
+lang: ne
+
+# Paths are repo-root-relative, matching every other entry point in this
+# project and the convention the README documents for downloading checkpoints
+# from Drive. Both checkpoint directories are gitignored: 278 MB is over
+# GitHub's hard limit, and the brief puts large artifacts on Drive.
+init: nepali/checkpoints/ckpt_final.pt  # Phase 2 pretrained checkpoint, Model L
+data_dir: nepali/reasoning              # Task 1 output for this language only
+out_dir: nepali/checkpoints_ft
+log_dir: nepali/logs                    # tracked: logs and curves are graded
+
+# Schedule. 20,000 examples / 32 = 625 batches per epoch, so 3 epochs is 1,875
+# optimizer steps -- single-digit minutes on a T4.
+epochs: 3
+batch_size: 32                        # ~900 tokens per batch; no accumulation needed
+max_len: 128                          # hard cap; the corpus maxes out at 43
+
+# Optimizer. AdamW with pretraining's betas, but a sixth of its peak learning
+# rate: the goal is to adapt the model to a new output format, not to overwrite
+# what it learned about Nepali. Warmup is 100 rather than 500 steps because the
+# run is eight times shorter.
+lr: 1.0e-4
+min_lr: 1.0e-5
+warmup_steps: 100
+weight_decay: 0.1                     # applied to >=2-D tensors only
+beta1: 0.9
+beta2: 0.95
+grad_clip: 1.0
+
+# Evaluation. eval_every must stay a multiple of log_every or validation never
+# runs -- the trainer raises rather than finishing with an empty val column.
+eval_every: 100
+log_every: 20
+save_every: 250
+eval_batch_size: 64
+
+seed: 1337
+device: auto
