@@ -10,4 +10,6 @@ Modules
 -------
 ``gen_reasoning``
     Generates the synthetic comparative-reasoning corpus for one language.
+``data``
+    Encodes those examples, masks the prompt out of the loss, and batches them.
 """
