@@ -60,7 +60,7 @@ Three things carried forward that shape this phase:
 
 **The two models are controlled against each other.** Same architecture, same
 parameter count, same token budget, same hyperparameters, same seed — only the
-corpus differs. That holds through finetuning too (§3.2), so every H-vs-L
+corpus differs. That holds through finetuning too (§3.3), so every H-vs-L
 difference reported here is attributable to the data.
 
 **Phase 2 ended with an unresolved disagreement.** Perplexity ranks Model H
@@ -240,12 +240,48 @@ which only ever receives the prompt, can never produce. `encode_prompt()` is the
 single function both training and evaluation call, so the training prefix and the
 generation prompt are identical by construction.
 
-Checkpoints are saved in Phase 2's format unchanged — `train/checkpoint.py` is
-imported verbatim — so they carry model weights, optimizer state, scheduler
-state, training step and configuration, plus the RNG and data-stream state that
-make a resumed run identical rather than merely similar.
+### 3.2 Checkpoints resume exactly, and this was measured
 
-### 3.2 Hyperparameters — identical for both models
+The brief requires finetuned checkpoints "in the same resume-capable format as
+pretraining". `train/checkpoint.py` is imported verbatim rather than
+reimplemented, so a finetuned checkpoint carries the five mandatory contents —
+model weights, optimizer state, scheduler state, training step, configuration —
+plus the RNG state and the data-stream position. Writes are atomic: `torch.save`
+to a `.tmp` file followed by `os.replace`, so a session killed mid-save leaves
+either the old complete file or the new one, never a truncated one.
+
+Saving a file is easy; proving the resumed run is the *same* run is the part
+worth measuring. The finetuning loop is different code from pretraining's, with a
+different data path, so the property was proved again rather than inherited: 40
+steps straight through, against the same 40 run as 20 steps → save → discard the
+trainer → build a fresh one → reload → 20 more.
+
+```
+step   uninterrupted      resumed    difference
+   0        4.603567     4.603567      0.00e+00
+  19        4.293663     4.293663      0.00e+00
+  20        4.207435     4.207435      0.00e+00   <- resumed here
+  39        4.178580     4.178580      0.00e+00
+
+largest weight difference across all 40 steps: 0.00e+00
+```
+
+`0.00e+00` is bit-identical, not "within tolerance" — every one of the model's
+parameters matches the uninterrupted run exactly.
+
+Two details make the test strict rather than decorative. **Dropout was left on**:
+it consumes the global RNG, so the run only stays reproducible if the
+checkpoint's RNG state is restored correctly — turning dropout off would have
+made the test easier and meaningless. And the **resume crosses an epoch
+boundary** (32 batches per epoch, 40 steps), so a loader that restored its
+position but not its epoch would pass a shorter test and fail this one.
+
+One ordering detail matters and is easy to get backwards: the RNG is restored
+**last**, after the model has been constructed. Construction itself consumes
+randomness, so restoring the RNG first would let that consumption overwrite the
+restored state, and the dropout masks would diverge from the original run.
+
+### 3.3 Hyperparameters — identical for both models
 
 `hindi/configs/hi_ft.yaml` and `nepali/configs/ne_ft.yaml` differ only in the
 three paths and the language code.
@@ -265,7 +301,7 @@ three paths and the language code.
 | Dropout | 0.1 / 0.1, unchanged | changing it mid-project would confound the comparison |
 | Seed | 1337 | same as pretraining |
 
-### 3.3 Training result
+### 3.4 Training result
 
 ![Model H finetuning loss](figures/ft_loss_H.png)
 ![Model L finetuning loss](figures/ft_loss_L.png)
@@ -506,10 +542,38 @@ their familiarity with the text.
 > weight early positions much more heavily. Only the pretrained-vs-finetuned
 > delta *within this section* is meaningful.
 
-### 6.1 Layer-wise profile
+### 6.1 The heatmaps
+
+The brief asks for pretrained-versus-finetuned heatmaps covering **at least one
+early and one late layer per model**. These four grids are that comparison. Each
+shows layers **0, 3 and 5** across heads 0–3 on the *same* held-out reasoning
+prompt, drawn on a fixed 0–1 colour scale so the panels can be read against each
+other — two independently autoscaled grids would show a difference that is an
+artifact of the colourbar.
+
+**Model H (Hindi)** — before, then after:
+
+![Model H pretrained, reasoning prompt](figures/attn_pre_H_reasoning_grid.png)
+![Model H finetuned, reasoning prompt](figures/attn_ft_H_reasoning_grid.png)
+
+**Model L (Nepali)** — before, then after:
+
+![Model L pretrained, reasoning prompt](figures/attn_pre_L_reasoning_grid.png)
+![Model L finetuned, reasoning prompt](figures/attn_ft_L_reasoning_grid.png)
+
+Every panel is lower-triangular, as it must be. The visible change is in the
+first column of each panel: the bright vertical stripe at position 0 — the
+attention sink — is noticeably fainter after finetuning, which is the same effect
+the sink-rate numbers in §6.3 report. Beyond that, the per-panel differences are
+hard to read by eye, which is precisely why the aggregate statistics below carry
+the argument rather than the pictures.
+
+### 6.2 Layer-wise profile
 
 ![Model H entropy by layer](figures/attn_profile_H_normalized_entropy.png)
 ![Model H distance by layer](figures/attn_profile_H_normalized_distance.png)
+![Model L entropy by layer](figures/attn_profile_L_normalized_entropy.png)
+![Model L distance by layer](figures/attn_profile_L_normalized_distance.png)
 
 | Layer | H entropy pre → ft | H distance pre → ft | L entropy pre → ft | L distance pre → ft |
 |---|---|---|---|---|
@@ -520,7 +584,7 @@ their familiarity with the text.
 | 4 | 0.541 → 0.419 | 0.424 → 0.314 | 0.512 → 0.492 | 0.474 → 0.363 |
 | 5 | 0.457 → 0.371 | 0.715 → 0.595 | 0.491 → 0.503 | 0.676 → 0.547 |
 
-### 6.2 Overall change
+### 6.3 Overall change
 
 | Statistic | H pre → ft | Δ | L pre → ft | Δ |
 |---|---|---:|---|---:|
@@ -529,10 +593,15 @@ their familiarity with the text.
 | Previous-token rate | 0.175 → 0.169 | −0.006 | 0.182 → 0.173 | −0.009 |
 | **Sink rate** | 0.350 → 0.237 | **−0.113** | 0.339 → 0.227 | **−0.112** |
 
+Per-head change, finetuned minus pretrained, on a diverging scale centred at
+zero. Blue means attention moved closer or grew sharper after finetuning.
+
 ![Model H distance delta](figures/attn_delta_H_normalized_distance.png)
 ![Model L distance delta](figures/attn_delta_L_normalized_distance.png)
+![Model H entropy delta](figures/attn_delta_H_normalized_entropy.png)
+![Model L entropy delta](figures/attn_delta_L_normalized_entropy.png)
 
-### 6.3 What changed
+### 6.4 What changed
 
 **Attention became more local, in both models.** Mean normalised distance fell at
 every layer for Hindi and at five of six for Nepali — −0.083 and −0.061 overall.
@@ -651,14 +720,14 @@ experiment does not separate them — see §8.
 
 | Claim | Evidence |
 |---|---|
-| Both models learned the task equally well | `test_iid` forced choice 83.4% vs 83.7% (§4.2); finetuning val loss 0.121 vs 0.102 (§3.3) |
+| Both models learned the task equally well | `test_iid` forced choice 83.4% vs 83.7% (§4.2); finetuning val loss 0.121 vs 0.102 (§3.4) |
 | H generalises better over entities | `test_names` 75.0% vs 62.0% forced, 46.0% vs 21.4% exact (§4.2) |
 | That gap is driven by tokenizer fertility | 1.5881 vs 1.4675 (§1); the rank-right / spell-wrong failures in §5.2(c) |
 | Neither model learned magnitude comparison | T4 at 31.7% / 30.8% against 33% chance (§4.3) |
 | Both learned extremum selection, not ordering | T6 at 16.8% / 36.7%, Hindi below chance (§4.3, §5.2(b)) |
 | Transitivity transferred to an unseen form | T3 at 69.6% / 58.9% against 33% chance (§4.3, §5.1) |
 | The pretrained baseline is a format failure, not a reasoning failure | exact 0.0% everywhere but forced choice 22–54% (§4.2); samples in §5.2(a) |
-| Finetuning made attention more local and less sink-dependent | distance −0.083 / −0.061, sink −0.113 / −0.112 (§6.2) |
+| Finetuning made attention more local and less sink-dependent | distance −0.083 / −0.061, sink −0.113 / −0.112 (§6.3) |
 | The accuracy numbers are not positional artifacts | best fixed-position rule 31.6–36.8% on in-pattern slices (§2.4) |
 
 ---
@@ -693,7 +762,7 @@ learned that shortcut here, but a *high* T6 score would not have proved ordering
 As it happens both scored low, so the point is moot.
 
 **Attention head classification uses heuristic thresholds** (`classify_head`),
-suitable for the qualitative discussion in §6.3 but not a formal test. The
+suitable for the qualitative discussion in §6.4 but not a formal test. The
 taxonomy counts are informative because the *same* thresholds are applied before
 and after, not because the labels are exact.
 
