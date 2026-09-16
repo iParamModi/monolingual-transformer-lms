@@ -2,31 +2,35 @@
 
 **Model H = Hindi (`hi`)  ·  Model L = Nepali (`ne`)**
 
-This is the consolidated report for the whole project. `report/phase1.md` and
-`report/phase2.md` remain the detailed record of their phases; §§2–3 below
-summarise them only as far as the Phase 3 conclusions depend on them.
+Each pretrained model is finetuned on a synthetic comparative-reasoning corpus in
+its own language, scored before and after, and its attention re-measured on
+reasoning prompts.
 
-| | Model H (Hindi) | Model L (Nepali) |
+`report/phase1.md` and `report/phase2.md` remain the record of their phases. §1
+below carries forward only the facts the Phase 3 conclusions actually depend on.
+
+| Phase 3 result | Model H (Hindi) | Model L (Nepali) |
 |---|---:|---:|
-| Training tokens (Phase 1) | 479,808,984 | 487,001,673 |
-| Manual share of training tokens | 13.46% | 7.98% |
-| Tokenizer fertility (tokens/word) | 1.4675 | 1.5881 |
-| Trainable parameters | 24,285,184 | 24,285,184 |
-| Test perplexity | **26.36** | **36.79** |
-| Bits per byte | **0.5448** | **0.5018** |
-| chrF++ (best decoding setting) | 19.90 | 18.35 |
-| **Reasoning, seen patterns** (exact match) | **83.4%** | **83.7%** |
-| **Reasoning, unseen names** (forced choice) | **75.0%** | **62.0%** |
-| **Reasoning, unseen patterns** (forced choice) | 43.2% | 47.4% |
+| Reasoning examples generated | 25,000 | 25,000 |
+| Finetuning validation loss | 0.1208 | 0.1018 |
+| **Seen patterns, seen names** | **83.4%** | **83.7%** |
+| **Seen patterns, unseen names** | **75.0%** | **62.0%** |
+| **Unseen patterns and names** | 43.2% | 47.4% |
+| Pretrained baseline (forced choice) | 22–54% | 22–54% |
+| Attention: mean distance change | −0.083 | −0.061 |
+| Attention: sink-rate change | −0.113 | −0.112 |
 
-The two models are identical in every controllable respect — same architecture,
-same parameter count, same token budget, same hyperparameters, same seed — so
-every difference reported here is attributable to the corpus.
+**The three findings.** Stated comparison is solved — 100% on every word-based
+family with familiar names. Numeric comparison never appeared — 31.7% and 30.8%
+against a 33% chance floor, despite ~4,400 numeric training examples each. And
+what was learned is *extremum selection*, not ordering: transitivity transfers to
+an unseen question form (69.6% on T3) while naming the middle element of a chain
+fails below chance (16.8% on T6).
 
-**The one-line finding.** Phase 2 ended with perplexity and bits-per-byte
-disagreeing about which model was better. Reasoning accuracy is an independent
-third measurement, and it sides with perplexity: on the slice that actually
-tests generalisation, Model H is clearly ahead (75.0% against 62.0%).
+**The cross-phase finding.** Phase 2 ended with perplexity and bits-per-byte
+disagreeing about which model was better. Reasoning is an independent third
+measurement and it sides with perplexity — on the slice that tests
+generalisation, Model H leads 75.0% to 62.0% (§7.2).
 
 Sources: `{lang}/eval/reasoning_{pretrained,finetuned}.json`,
 `{lang}/eval/attention_ft_stats.json`, `{lang}/logs/finetune_log.csv`,
@@ -34,109 +38,60 @@ Sources: `{lang}/eval/reasoning_{pretrained,finetuned}.json`,
 
 ---
 
-## 1. What was built
+## 1. What Phase 3 starts from
 
-Two fully independent decoder-only Transformers, from corpus collection through
-to reasoning finetuning. Nothing is shared between them: not a document, not a
-tokenizer, not a vocabulary entry, not a weight.
+Two pretrained decoder-only Transformers, one per language, built in Phases 1–2.
+Only the facts below matter for what follows; the full accounts are in
+[`phase1.md`](phase1.md) and [`phase2.md`](phase2.md).
 
-| Phase | What it produced |
-|---|---|
-| 1 | Two corpora (~480M tokens each) and two from-scratch BPE tokenizers |
-| 2 | Two pretrained 24.3M-parameter language models, evaluated on perplexity, bits-per-byte, generation quality and attention structure |
-| 3 | Two synthetic reasoning corpora, two finetuned models, and a before/after comparison of both accuracy and attention |
+| | Model H (Hindi) | Model L (Nepali) | Why it matters here |
+|---|---:|---:|---|
+| Trainable parameters | 24,285,184 | 24,285,184 | identical, so capacity is not a variable |
+| Pretraining tokens | 475,136,000 | 475,136,000 | identical budget |
+| Training tokens available | 479,808,984 | 487,001,673 | |
+| Manual share of training tokens | 13.46% | 7.98% | H had 69% more curated in-domain text |
+| **Tokenizer fertility** (tokens/word) | **1.4675** | **1.5881** | drives the §5.2(c) failure mode |
+| Top-1000 token coverage | 72.52% | 62.67% | L's distribution is flatter |
+| Test perplexity | **26.36** | **36.79** | says H is better |
+| Bits per byte | **0.5448** | **0.5018** | says L is better |
+| Vocabulary | 10,000 | 10,000 | unchanged during finetuning |
 
-The implementation in `model/`, `train/`, `eval/` and `finetune/` is shared code
-taking an explicit `--lang`. Independence is enforced rather than asserted:
-`eval/loader.py` raises if a checkpoint is paired with another language's
-tokenizer, and `finetune/finetune.py` refuses to finetune a model on data from
-the wrong language.
+Three things carried forward that shape this phase:
 
----
+**The two models are controlled against each other.** Same architecture, same
+parameter count, same token budget, same hyperparameters, same seed — only the
+corpus differs. That holds through finetuning too (§3.2), so every H-vs-L
+difference reported here is attributable to the data.
 
-## 2. Phase 1 recap — the corpora the comparison rests on
+**Phase 2 ended with an unresolved disagreement.** Perplexity ranks Model H
+better by 40%; bits-per-byte ranks Model L better by 8%. Perplexity is per
+*token* and a Nepali token carries 22% more bytes, so the two metrics are
+measuring different things. Phase 2 could only conclude the narrow claim — that
+the raw perplexity gap overstates the quality gap — and left open which metric
+tracks actual capability. §7.2 settles it with a third measurement.
 
-| | Hindi | Nepali |
-|---|---:|---:|
-| Manual words collected | 53,678,691 | 29,298,940 |
-| Downloaded words available | 997,797,163 | 679,546,227 |
-| Downloaded kept after downsampling | 37.32% | 53.75% |
-| Final corpus | 426,010,496 words | 394,520,893 words |
-| Training tokens | 479,808,984 | 487,001,673 |
-| Vocabulary | 10,000 | 10,000 |
-| Fertility (tokens/word) | 1.4675 | 1.5881 |
-| Characters per token | 3.4715 | 3.9520 |
-| UNK rate (train) | 5.27 × 10⁻⁶ | 5.07 × 10⁻⁶ |
-| Top-1000 token coverage | 72.52% | 62.67% |
-| **Manual share of training tokens** | **13.46%** | **7.98%** |
+**The sequence format is inherited.** Pretraining packed documents as
+`… doc </s> doc …` with **no BOS**, so token id 2 was never trained and its
+embedding is still at initialisation. Finetuning examples are therefore
+`prompt + " " + answer + </s>` with no BOS (§3.1).
 
-Splits are 80/10/10 at the **document** level, assigned by a deterministic hash
-of the document text (seed 1337) rather than a shuffle — so they reproduce
-exactly without storing an index, and a duplicated document cannot straddle
-train and test. Manual and downloaded documents are stratified independently,
-which is why the manual share is near-identical across all three splits
-(12.62 / 12.68 / 12.27% for Hindi).
+**Architecture**, for reference: 6 layers × 512 d_model × 8 heads, d_ff 2048,
+context 512, pre-norm, learned absolute positional embeddings, tied
+input/output embeddings. Multi-head attention, positional embeddings and the
+causal mask are written from PyTorch primitives in `model/gpt.py`, with
+`F.scaled_dot_product_attention` deliberately unused — which is what makes the
+attention analysis in §6 possible.
 
-**The manual-data shortfall.** The brief requires ≥20% of training tokens from
-manual collection. Hindi reached 13.46%, Nepali 7.98%. All manual data collected
-was used — 100% of it, no downsampling — and the downloaded side was cut to
-37.32% and 53.75% respectively to raise the manual share as far as the ~500M
-token target permitted. Nepali simply did not have enough manually collectable
-text available. This is a genuine shortfall, not an oversight, and §10 states
-what it does and does not affect.
-
-**Manual collection was scraping, not OCR.** The brief lists three acceptable
-routes — OCR from books/PDFs, scraping pages you gather yourself, or typed
-transcription. `scripts/scrape_manual.py` implements the second: sitemap and
-MediaWiki-API discovery into a resumable SQLite frontier, robots.txt compliance
-and rate limiting, with per-document `source`, `url` and `fetched_at` preserved.
+![Validation loss, both models, Phase 2 pretraining](figures/loss_comparison.png)
 
 ---
 
-## 3. Phase 2 recap — the models being finetuned
-
-**Architecture**, identical for both: 6 layers × 512 d_model × 8 heads,
-d_ff 2048, context 512, pre-norm, learned absolute positional embeddings, tied
-input/output embeddings. **24,285,184 trainable parameters each** — identical,
-not approximately, because both Phase 1 vocabularies came out at 10,000.
-
-Multi-head attention, positional embeddings and the causal mask are written from
-PyTorch primitives in `model/gpt.py`; `F.scaled_dot_product_attention` is
-deliberately not used, which is what makes the attention analysis in §8 possible.
-
-**Pretraining**: 14,500 steps, 475,136,000 tokens each, AdamW with a 500-step
-warmup into cosine decay, fp16 on a Tesla T4. Equal *step* count rather than
-equal epochs, so neither model was trained longer than the other.
-
-| | Model H | Model L |
-|---|---:|---:|
-| Test cross-entropy | 3.2719 | 3.6054 |
-| **Test perplexity** | **26.36** | **36.79** |
-| **Bits per byte** | **0.5448** | **0.5018** |
-| Bytes per token | 8.39 | 10.24 |
-| Unigram baseline perplexity | 1,355.2 | 2,419.0 |
-| Improvement over unigram | 51× | 66× |
-| chrF++ (best setting) | 19.90 (t = 0.5) | 18.35 (t = 1.0) |
-
-![Validation loss, both models](figures/loss_comparison.png)
-
-**The Phase 2 finding that Phase 3 was built to test.** Model L is 40% worse on
-perplexity but 8% *better* on bits-per-byte. The two metrics disagree in
-direction. Perplexity is per token, and a Nepali token carries 22% more bytes,
-so Model L is making a harder prediction at each step; bits-per-byte corrects
-for that by normalising against a unit both models share. Phase 2 concluded only
-the narrow claim — that the raw perplexity gap overstates the quality gap — and
-left open which metric better tracks actual capability. §9 answers that with a
-third, independent measurement.
-
----
-
-## 4. The reasoning dataset
+## 2. The reasoning dataset
 
 Generated programmatically by `finetune/gen_reasoning.py`, so every label is
 known by construction. No existing benchmark was downloaded.
 
-### 4.1 Task families
+### 2.1 Task families
 
 Seven families per language, covering the three styles the brief names —
 superlatives over a stated chain, comparison of given quantities, and multi-hop
@@ -177,7 +132,7 @@ possessive agrees with the dimension noun (की उम्र, का वजन
 example therefore share grammatical gender — otherwise the adjective *in the
 question* would identify which entity is the answer.
 
-### 4.2 Size and template variety
+### 2.2 Size and template variety
 
 | Split | Templates | Names | Hindi | Nepali |
 |---|---|---|---:|---:|
@@ -197,7 +152,7 @@ the pool available to any single example. Mean encoded length 27.8 (H) and 26.8
 Entity pools, disjoint between train and test: 24 people (12 m + 12 f) train /
 16 test; 14 objects and 14 vehicles train / 10 each test.
 
-### 4.3 Train–test leakage control
+### 2.3 Train–test leakage control
 
 The brief asks for held-out entity names **or** held-out relation patterns. Both
 are used, isolated into separate slices, because a single test number cannot
@@ -213,7 +168,7 @@ distinguish memorisation from generalisation:
 On top of that, every prompt string is blocked from every later split, so the
 splits are disjoint by construction rather than by filtering afterwards.
 
-### 4.4 Balance controls, and the floors they establish
+### 2.4 Balance controls, and the floors they establish
 
 An accuracy without a floor is not evidence. Three controls, all measured into
 `{lang}/reasoning/stats.json`:
@@ -229,13 +184,13 @@ in-pattern slices, against 33–36% chance.
 of a three-entity chain, and that entity is named in *both* premises — so it is
 mentioned first or second, never last. No shuffling changes that. A fixed-position
 rule therefore scores **42.3% (H) / 42.2% (L)** on `test_templates`. That is the
-floor the §6 numbers for that slice must be read against, and it is why that
+floor the §4 numbers for that slice must be read against, and it is why that
 slice's headline figure looks weaker than it is.
 
 **Answer identity.** No single name is the answer disproportionately often within
 the gender group it competes in.
 
-### 4.5 Digit script — measured, not assumed
+### 2.5 Digit script — measured, not assumed
 
 T4 and T5 contain numerals, and which script to write them in is an empirical
 question about each corpus. `finetune/gen_reasoning.py --digit-audit` counts
@@ -251,9 +206,9 @@ numeric family fail for a tokenisation reason with nothing to do with reasoning.
 
 ---
 
-## 5. Finetuning
+## 3. Finetuning
 
-### 5.1 Protocol
+### 3.1 Protocol
 
 Each model starts from **its own** pretrained checkpoint and is trained only on
 **its own** language's reasoning corpus. The architecture is read out of the
@@ -290,7 +245,7 @@ imported verbatim — so they carry model weights, optimizer state, scheduler
 state, training step and configuration, plus the RNG and data-stream state that
 make a resumed run identical rather than merely similar.
 
-### 5.2 Hyperparameters — identical for both models
+### 3.2 Hyperparameters — identical for both models
 
 `hindi/configs/hi_ft.yaml` and `nepali/configs/ne_ft.yaml` differ only in the
 three paths and the language code.
@@ -310,7 +265,7 @@ three paths and the language code.
 | Dropout | 0.1 / 0.1, unchanged | changing it mid-project would confound the comparison |
 | Seed | 1337 | same as pretraining |
 
-### 5.3 Training result
+### 3.3 Training result
 
 ![Model H finetuning loss](figures/ft_loss_H.png)
 ![Model L finetuning loss](figures/ft_loss_L.png)
@@ -340,14 +295,14 @@ applied to answer tokens only rather than to whole sequences.
 
 **Answer-token accuracy is a training signal, not a result.** It is
 teacher-forced and measured on `val.jsonl`, which reuses training question types
-and training names. It says the optimisation worked. §6 is what says whether the
+and training names. It says the optimisation worked. §4 is what says whether the
 model can reason.
 
 ---
 
-## 6. Reasoning results
+## 4. Reasoning results
 
-### 6.1 Two scoring protocols, and why both are needed
+### 4.1 Two scoring protocols, and why both are needed
 
 **Exact match** — prompt the model, decode greedily to at most 8 tokens, stop at
 `</s>`, compare against the gold answer after Unicode NFC normalisation. This is
@@ -371,7 +326,7 @@ decomposed as base + U+093C. Canonically the same string, different bytes. A
 byte comparison would mark correct answers wrong on exactly the entities whose
 names carry a nukta.
 
-### 6.2 Headline results
+### 4.2 Headline results
 
 ![Reasoning accuracy by slice](figures/reasoning_accuracy.png)
 
@@ -406,7 +361,7 @@ itself*, so a model that merely prefers a recently-named entity picks between th
 right two and gets ~50% for free. It is exactly why per-slice and per-template
 breakdowns matter — an aggregate would have hidden it.
 
-### 6.3 Per-template breakdown
+### 4.3 Per-template breakdown
 
 ![Accuracy by template family](figures/reasoning_by_template.png)
 
@@ -427,7 +382,7 @@ Finetuned models. `*` marks a family held out of training entirely.
 | **T3\* transitive, A-vs-C** | **45.6%** | **69.6%** | **17.2%** | **58.9%** |
 | **T6\* middle element** | 1.8% | **16.8%** | 7.9% | 36.7% |
 
-### 6.4 What the numbers say
+### 4.4 What the numbers say
 
 Four findings, in order of how much they change the picture.
 
@@ -459,12 +414,12 @@ was learned is extremum selection rather than ordering.
 
 ---
 
-## 7. Qualitative analysis
+## 5. Qualitative analysis
 
 Every example below is drawn from the committed
 `{lang}/eval/reasoning_samples_*.jsonl`.
 
-### 7.1 Successes
+### 5.1 Successes
 
 **Transitivity on an unseen question form** (T3, held out). The model has only
 ever been asked "who is the most X"; here it is asked to relate two specific
@@ -487,7 +442,7 @@ question asks कान्छो (younger).
 **The equality case**, at 100% across every slice including unseen names — the
 model correctly declines to name an entity when neither wins.
 
-### 7.2 Failures, with diagnosis
+### 5.2 Failures, with diagnosis
 
 **(a) Format failure before finetuning.** The reason exact match alone is
 misleading:
@@ -501,7 +456,7 @@ misleading:
 The pretrained model is not failing to compare — it is continuing the text,
 because that is the only thing it was ever trained to do.
 
-**(b) The middle-element collapse** (T6). Diagnosed in §6.4: the model has learned
+**(b) The middle-element collapse** (T6). Diagnosed in §4.4: the model has learned
 that answers are extremes.
 
 > **H:** पंकज, मनीष से छोटा है। मनीष, आशीष से छोटा है। बीच में कौन है?
@@ -537,7 +492,7 @@ tokenizer property shows up directly as a Phase 3 capability difference.
 
 ---
 
-## 8. Attention: pretrained vs finetuned
+## 6. Attention: pretrained vs finetuned
 
 Measured with the Phase 2 toolkit unchanged — `capture_attention` and
 `attention_stats_over_sequences` — on **64 reasoning prompts drawn from
@@ -545,13 +500,13 @@ Measured with the Phase 2 toolkit unchanged — `capture_attention` and
 through both models, so any difference is a difference in the models and not in
 their familiarity with the text.
 
-> **These numbers are not comparable to `phase2.md` §5.** Phase 2 measured on 64
+> **These numbers are not comparable to `phase2.md` §3.** Phase 2 measured on 64
 > random 256-token windows of corpus text; this measures on ~30-token reasoning
 > prompts, and the entropy normalisation is per position, so short sequences
 > weight early positions much more heavily. Only the pretrained-vs-finetuned
 > delta *within this section* is meaningful.
 
-### 8.1 Layer-wise profile
+### 6.1 Layer-wise profile
 
 ![Model H entropy by layer](figures/attn_profile_H_normalized_entropy.png)
 ![Model H distance by layer](figures/attn_profile_H_normalized_distance.png)
@@ -565,7 +520,7 @@ their familiarity with the text.
 | 4 | 0.541 → 0.419 | 0.424 → 0.314 | 0.512 → 0.492 | 0.474 → 0.363 |
 | 5 | 0.457 → 0.371 | 0.715 → 0.595 | 0.491 → 0.503 | 0.676 → 0.547 |
 
-### 8.2 Overall change
+### 6.2 Overall change
 
 | Statistic | H pre → ft | Δ | L pre → ft | Δ |
 |---|---|---:|---|---:|
@@ -577,7 +532,7 @@ their familiarity with the text.
 ![Model H distance delta](figures/attn_delta_H_normalized_distance.png)
 ![Model L distance delta](figures/attn_delta_L_normalized_distance.png)
 
-### 8.3 What changed
+### 6.3 What changed
 
 **Attention became more local, in both models.** Mean normalised distance fell at
 every layer for Hindi and at five of six for Nepali — −0.083 and −0.061 overall.
@@ -614,9 +569,9 @@ conclusion.
 
 ---
 
-## 9. Model H versus Model L — the four required questions
+## 7. Model H versus Model L — the four required questions
 
-### 9.1 How did data scale and quality differ?
+### 7.1 How did data scale and quality differ?
 
 | Factor | Hindi | Nepali | Direction |
 |---|---:|---:|---|
@@ -631,7 +586,7 @@ Nepali is the lower-resource language by every measure, and the shortfall
 compounds: less text available → less aggressive downsampling possible → a
 smaller manual share → a flatter token distribution.
 
-### 9.2 How do language-modelling and reasoning results compare across the tiers?
+### 7.2 How do language-modelling and reasoning results compare across the tiers?
 
 This is the question Phase 2 could not settle. It left two metrics pointing in
 opposite directions:
@@ -672,11 +627,11 @@ So bits-per-byte was measuring something real — Model L does compress its own
 language slightly better per byte — but it was not measuring the capability that
 transfers to a downstream task.
 
-### 9.3 What tokenizer / corpus factors most affected the lower-resource model?
+### 7.3 What tokenizer / corpus factors most affected the lower-resource model?
 
 **Fertility, and it is visible directly in the error analysis.** Nepali's 1.5881
 tokens per word against Hindi's 1.4675 means an unfamiliar entity name is split
-into more pieces. The consequence is §7.2(c): on unseen names, both models rank
+into more pieces. The consequence is §5.2(c): on unseen names, both models rank
 the correct answer well (75.0% vs 62.0%) but Nepali collapses when asked to
 *write* it (21.4% vs 46.0%), producing fragments like `मता`. Each extra piece is
 another opportunity to drift.
@@ -690,40 +645,40 @@ as Model L peaking at a higher generation temperature (1.0 vs 0.5).
 and both vocabularies are 10,000. Those were ruled out rather than assumed.
 
 **Corpus size and manual share are confounded with fertility** and this
-experiment does not separate them — see §10.
+experiment does not separate them — see §8.
 
-### 9.4 What evidence explains the observed differences?
+### 7.4 What evidence explains the observed differences?
 
 | Claim | Evidence |
 |---|---|
-| Both models learned the task equally well | `test_iid` forced choice 83.4% vs 83.7% (§6.2); finetuning val loss 0.121 vs 0.102 (§5.3) |
-| H generalises better over entities | `test_names` 75.0% vs 62.0% forced, 46.0% vs 21.4% exact (§6.2) |
-| That gap is driven by tokenizer fertility | 1.5881 vs 1.4675 (§2); the rank-right / spell-wrong failures in §7.2(c) |
-| Neither model learned magnitude comparison | T4 at 31.7% / 30.8% against 33% chance (§6.3) |
-| Both learned extremum selection, not ordering | T6 at 16.8% / 36.7%, Hindi below chance (§6.3, §7.2b) |
-| Transitivity transferred to an unseen form | T3 at 69.6% / 58.9% against 33% chance (§6.3, §7.1) |
-| The pretrained baseline is a format failure, not a reasoning failure | exact 0.0% everywhere but forced choice 22–54% (§6.2); samples in §7.2(a) |
-| Finetuning made attention more local and less sink-dependent | distance −0.083 / −0.061, sink −0.113 / −0.112 (§8.2) |
-| The accuracy numbers are not positional artifacts | best fixed-position rule 31.6–36.8% on in-pattern slices (§4.4) |
+| Both models learned the task equally well | `test_iid` forced choice 83.4% vs 83.7% (§4.2); finetuning val loss 0.121 vs 0.102 (§3.3) |
+| H generalises better over entities | `test_names` 75.0% vs 62.0% forced, 46.0% vs 21.4% exact (§4.2) |
+| That gap is driven by tokenizer fertility | 1.5881 vs 1.4675 (§1); the rank-right / spell-wrong failures in §5.2(c) |
+| Neither model learned magnitude comparison | T4 at 31.7% / 30.8% against 33% chance (§4.3) |
+| Both learned extremum selection, not ordering | T6 at 16.8% / 36.7%, Hindi below chance (§4.3, §5.2(b)) |
+| Transitivity transferred to an unseen form | T3 at 69.6% / 58.9% against 33% chance (§4.3, §5.1) |
+| The pretrained baseline is a format failure, not a reasoning failure | exact 0.0% everywhere but forced choice 22–54% (§4.2); samples in §5.2(a) |
+| Finetuning made attention more local and less sink-dependent | distance −0.083 / −0.061, sink −0.113 / −0.112 (§6.2) |
+| The accuracy numbers are not positional artifacts | best fixed-position rule 31.6–36.8% on in-pattern slices (§2.4) |
 
 ---
 
-## 10. Limitations
+## 8. Limitations
 
-**The manual-data requirement was not met.** 13.46% (H) and 7.98% (L) against the
-brief's 20%. All manual data collected was used and the downloaded side was
+**The manual-data requirement was not met** (a Phase 1 shortfall carried forward;
+see [`phase1.md`](phase1.md) §7). 13.46% (H) and 7.98% (L) against the brief's 20%. All manual data collected was used and the downloaded side was
 downsampled as far as the token target allowed; Nepali had no more manually
 collectable text available. Its effect on these results is not isolated by any
 measurement here.
 
 **n = 1 per language.** One pretraining run and one finetuning run each. Every
-H-vs-L difference in §9 is a real measurement with no error bars. Nothing here
+H-vs-L difference in §7 is a real measurement with no error bars. Nothing here
 separates a language effect from run-to-run variance — including the attention
-differences in §8.
+differences in §6.
 
 **Corpus size, manual share and fertility are confounded.** Nepali has less text
 *and* less curated text *and* a higher-fertility tokenizer. The error analysis in
-§7.2(c) points at fertility as the proximate cause of the exact-match gap, but a
+§5.2(c) points at fertility as the proximate cause of the exact-match gap, but a
 clean test would hold fertility constant, which two independently-trained
 tokenizers cannot do.
 
@@ -738,7 +693,7 @@ learned that shortcut here, but a *high* T6 score would not have proved ordering
 As it happens both scored low, so the point is moot.
 
 **Attention head classification uses heuristic thresholds** (`classify_head`),
-suitable for the qualitative discussion in §8.3 but not a formal test. The
+suitable for the qualitative discussion in §6.3 but not a formal test. The
 taxonomy counts are informative because the *same* thresholds are applied before
 and after, not because the labels are exact.
 
@@ -746,7 +701,7 @@ and after, not because the labels are exact.
 
 ---
 
-## 11. Reproduction
+## 9. Reproduction
 
 Every number, table and figure in this report is regenerable from the committed
 code and data. Commands, Google Drive links and environment setup are in the
