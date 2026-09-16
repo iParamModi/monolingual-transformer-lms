@@ -1,6 +1,7 @@
 venv
 .venv
 __pycache__/
+.pytest_cache/
 
 # All corpus data is large - keep it out of git.
 # (upload to Google Drive instead, and put the link in README.md)
