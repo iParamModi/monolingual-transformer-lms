@@ -7,6 +7,8 @@ figure is saved, so that failure mode is structurally impossible here.
 Devanagari text in tick labels needs a font that actually has the glyphs:
 matplotlib's default (DejaVu Sans) renders Hindi/Nepali as empty boxes. Call
 ``setup_devanagari_font()`` once before generating any figure with token labels.
+It installs Noto *and* DejaVu, so the Devanagari and the English on the same
+figure both render -- see that function for why a single family is not enough.
 """
 
 from __future__ import annotations
@@ -23,6 +25,19 @@ _FONT_READY = False
 def setup_devanagari_font(font_path: str | Path = "report/fonts/NotoSansDevanagari-Regular.ttf") -> bool:
     """Register a Devanagari-capable font with matplotlib, once.
 
+    The family is installed as a **list** with DejaVu Sans behind it, not as a
+    single name, and that detail matters. Noto Sans Devanagari covers
+    Devanagari and little else: set alone, it renders every Latin character in
+    a figure -- the title, the axis labels, the legend, "Model H", "layer",
+    "head" -- as an empty box, along with SentencePiece's U+2581 word-boundary
+    marker on token labels. The brief says a plot missing its labels "may
+    receive zero marks for that component", and a label drawn as boxes is a
+    missing label.
+
+    matplotlib walks this list per glyph (multi-font fallback, 3.6+), so
+    Devanagari comes from Noto and everything else from DejaVu Sans, which
+    ships with matplotlib and is always present.
+
     Args:
         font_path: Path to a .ttf with Devanagari coverage.
 
@@ -37,7 +52,7 @@ def setup_devanagari_font(font_path: str | Path = "report/fonts/NotoSansDevanaga
         return False
     font_manager.fontManager.addfont(str(path))
     family = font_manager.FontProperties(fname=str(path)).get_name()
-    rcParams["font.family"] = family
+    rcParams["font.family"] = [family, "DejaVu Sans"]
     _FONT_READY = True
     return True
 
