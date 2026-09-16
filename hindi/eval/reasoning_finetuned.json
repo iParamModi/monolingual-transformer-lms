@@ -1,0 +1,112 @@
+{
+  "checkpoint": "hindi/checkpoints_ft/ckpt_ft_final.pt",
+  "elapsed_s": 436.3,
+  "lang": "hi",
+  "max_new_tokens": 8,
+  "model": "hi_25m",
+  "slices": {
+    "test_iid": {
+      "baselines": {
+        "majority_answer": 0.108,
+        "positional_best": 0.323,
+        "random": 0.3585
+      },
+      "by_template": {
+        "0": {
+          "exact_match": 1.0,
+          "likelihood_acc": 1.0,
+          "n": 151
+        },
+        "1": {
+          "exact_match": 1.0,
+          "likelihood_acc": 1.0,
+          "n": 258
+        },
+        "2": {
+          "exact_match": 1.0,
+          "likelihood_acc": 1.0,
+          "n": 240
+        },
+        "4": {
+          "exact_match": 0.3169,
+          "likelihood_acc": 0.3169,
+          "n": 243
+        },
+        "5": {
+          "exact_match": 1.0,
+          "likelihood_acc": 1.0,
+          "n": 108
+        }
+      },
+      "exact_match": 0.834,
+      "likelihood_acc": 0.834,
+      "likelihood_acc_lennorm": 0.834,
+      "n": 1000,
+      "prefix_match": 0.834
+    },
+    "test_names": {
+      "baselines": {
+        "majority_answer": 0.132,
+        "positional_best": 0.316,
+        "random": 0.3592
+      },
+      "by_template": {
+        "0": {
+          "exact_match": 0.5935,
+          "likelihood_acc": 0.9613,
+          "n": 155
+        },
+        "1": {
+          "exact_match": 0.4769,
+          "likelihood_acc": 0.8102,
+          "n": 216
+        },
+        "2": {
+          "exact_match": 0.4852,
+          "likelihood_acc": 0.8037,
+          "n": 270
+        },
+        "4": {
+          "exact_match": 0.0088,
+          "likelihood_acc": 0.3392,
+          "n": 227
+        },
+        "5": {
+          "exact_match": 1.0,
+          "likelihood_acc": 1.0,
+          "n": 132
+        }
+      },
+      "exact_match": 0.46,
+      "likelihood_acc": 0.75,
+      "likelihood_acc_lennorm": 0.771,
+      "n": 1000,
+      "prefix_match": 0.46
+    },
+    "test_templates": {
+      "baselines": {
+        "majority_answer": 0.049,
+        "positional_best": 0.423,
+        "random": 0.3333
+      },
+      "by_template": {
+        "3": {
+          "exact_match": 0.456,
+          "likelihood_acc": 0.696,
+          "n": 500
+        },
+        "6": {
+          "exact_match": 0.018,
+          "likelihood_acc": 0.168,
+          "n": 500
+        }
+      },
+      "exact_match": 0.237,
+      "likelihood_acc": 0.432,
+      "likelihood_acc_lennorm": 0.425,
+      "n": 1000,
+      "prefix_match": 0.237
+    }
+  },
+  "tag": "finetuned"
+}
