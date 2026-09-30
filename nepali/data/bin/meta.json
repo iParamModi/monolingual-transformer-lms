@@ -1,0 +1,163 @@
+{
+  "language": "nepali",
+  "lang_code": "ne",
+  "tokenizer_model": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\nepali\\tokenizer\\ne_bpe_10000.model",
+  "tokenizer_model_relative": "nepali/tokenizer/ne_bpe_10000.model",
+  "vocab_size": 10000,
+  "special_ids": {
+    "pad": 0,
+    "unk": 1,
+    "bos": 2,
+    "eos": 3
+  },
+  "dtype": "uint16",
+  "splits": {
+    "train": {
+      "tokens": 487001673,
+      "unk_tokens": 2469,
+      "unk_rate": 5.0698e-06,
+      "manual_tokens": 38849727,
+      "downloaded_tokens": 448151946,
+      "manual_token_frac": 0.0798,
+      "bin": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\nepali\\data\\bin\\train.bin",
+      "bin_relative": "nepali/data/bin/train.bin",
+      "dtype": "uint16"
+    },
+    "val": {
+      "tokens": 60899013,
+      "unk_tokens": 480,
+      "unk_rate": 7.8819e-06,
+      "manual_tokens": 4912835,
+      "downloaded_tokens": 55986178,
+      "manual_token_frac": 0.0807,
+      "bin": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\nepali\\data\\bin\\val.bin",
+      "bin_relative": "nepali/data/bin/val.bin",
+      "dtype": "uint16"
+    },
+    "test": {
+      "tokens": 60373211,
+      "unk_tokens": 539,
+      "unk_rate": 8.9278e-06,
+      "manual_tokens": 4896014,
+      "downloaded_tokens": 55477197,
+      "manual_token_frac": 0.0811,
+      "bin": "D:\\IIIT Hyderabad\\Semester 3\\LMA\\Assignment-1\\individual-project-iParamModi\\nepali\\data\\bin\\test.bin",
+      "bin_relative": "nepali/data/bin/test.bin",
+      "dtype": "uint16"
+    }
+  },
+  "token_frequency": {
+    "vocab_size": 10000,
+    "distinct_tokens_used": 9997,
+    "unused_tokens": 3,
+    "singleton_tokens": 303,
+    "top1000_coverage": 0.6267,
+    "top20": [
+      {
+        "id": 14,
+        "piece": "▁।",
+        "count": 13401324
+      },
+      {
+        "id": 7865,
+        "piece": ",",
+        "count": 8639186
+      },
+      {
+        "id": 17,
+        "piece": "▁र",
+        "count": 5830319
+      },
+      {
+        "id": 27,
+        "piece": "▁छ",
+        "count": 5448444
+      },
+      {
+        "id": 5,
+        "piece": "को",
+        "count": 5148708
+      },
+      {
+        "id": 6,
+        "piece": "मा",
+        "count": 4350381
+      },
+      {
+        "id": 7852,
+        "piece": "।",
+        "count": 3873310
+      },
+      {
+        "id": 9,
+        "piece": "का",
+        "count": 3654996
+      },
+      {
+        "id": 15,
+        "piece": "ले",
+        "count": 3443693
+      },
+      {
+        "id": 75,
+        "piece": "▁पनि",
+        "count": 3228450
+      },
+      {
+        "id": 50,
+        "piece": "लाई",
+        "count": 2875301
+      },
+      {
+        "id": 91,
+        "piece": "▁हो",
+        "count": 1910394
+      },
+      {
+        "id": 122,
+        "piece": "▁छन्",
+        "count": 1854982
+      },
+      {
+        "id": 123,
+        "piece": "▁भएको",
+        "count": 1782478
+      },
+      {
+        "id": 118,
+        "piece": "बाट",
+        "count": 1622596
+      },
+      {
+        "id": 140,
+        "piece": "▁लागि",
+        "count": 1596005
+      },
+      {
+        "id": 141,
+        "piece": "▁'",
+        "count": 1592876
+      },
+      {
+        "id": 108,
+        "piece": "▁भने",
+        "count": 1528721
+      },
+      {
+        "id": 144,
+        "piece": "▁गर्न",
+        "count": 1514444
+      },
+      {
+        "id": 160,
+        "piece": "▁।\\",
+        "count": 1444498
+      }
+    ]
+  },
+  "manual_requirement": {
+    "threshold": 0.2,
+    "achieved_train": 0.0798,
+    "satisfied": false
+  }
+}

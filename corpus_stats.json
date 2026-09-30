@@ -1,0 +1,204 @@
+{
+  "hindi": {
+    "manual": {
+      "docs": 139672,
+      "chars": 275931416,
+      "words": 53678691,
+      "pretokens": 61928522,
+      "avg_words_per_doc": 384.3,
+      "avg_chars_per_word": 5.14
+    },
+    "downloaded_total": {
+      "docs": 1777998,
+      "chars": 5015779965,
+      "words": 997797163,
+      "pretokens": 1123198552,
+      "avg_words_per_doc": 561.2,
+      "avg_chars_per_word": 5.03
+    },
+    "downloaded_by_source": {
+      "cc100": {
+        "docs": 71639,
+        "chars": 17086635,
+        "words": 3475754,
+        "pretokens": 3873667,
+        "avg_words_per_doc": 48.5,
+        "avg_chars_per_word": 4.92
+      },
+      "madlad": {
+        "docs": 480710,
+        "chars": 2026815318,
+        "words": 405373021,
+        "pretokens": 464523280,
+        "avg_words_per_doc": 843.3,
+        "avg_chars_per_word": 5.0
+      },
+      "mc4": {
+        "docs": 288838,
+        "chars": 813337419,
+        "words": 161730260,
+        "pretokens": 181651472,
+        "avg_words_per_doc": 559.9,
+        "avg_chars_per_word": 5.03
+      },
+      "sangraha": {
+        "docs": 483077,
+        "chars": 1222187494,
+        "words": 241465380,
+        "pretokens": 268042488,
+        "avg_words_per_doc": 499.8,
+        "avg_chars_per_word": 5.06
+      },
+      "sangraha_verified": {
+        "docs": 453734,
+        "chars": 936353099,
+        "words": 185752748,
+        "pretokens": 205107645,
+        "avg_words_per_doc": 409.4,
+        "avg_chars_per_word": 5.04
+      }
+    },
+    "combined_if_all_used": {
+      "docs": 1917670,
+      "chars": 5291711381,
+      "words": 1051475854,
+      "pretokens": 1185127074,
+      "avg_words_per_doc": 548.3,
+      "avg_chars_per_word": 5.03
+    },
+    "manual_word_frac_if_all_used": 0.0511,
+    "mix_plans": {
+      "20pct": {
+        "target_manual_frac": 0.2,
+        "downloaded_words_to_keep": 214714764,
+        "downloaded_sample_ratio": 0.2152,
+        "total_words": 268393455,
+        "manual_frac_achieved": 0.2,
+        "manual_limited": false,
+        "projected_tokens_low": 375750837,
+        "projected_tokens_high": 590465601
+      },
+      "25pct": {
+        "target_manual_frac": 0.25,
+        "downloaded_words_to_keep": 161036073,
+        "downloaded_sample_ratio": 0.1614,
+        "total_words": 214714764,
+        "manual_frac_achieved": 0.25,
+        "manual_limited": false,
+        "projected_tokens_low": 300600670,
+        "projected_tokens_high": 472372481
+      },
+      "30pct": {
+        "target_manual_frac": 0.3,
+        "downloaded_words_to_keep": 125250279,
+        "downloaded_sample_ratio": 0.1255,
+        "total_words": 178928970,
+        "manual_frac_achieved": 0.3,
+        "manual_limited": false,
+        "projected_tokens_low": 250500558,
+        "projected_tokens_high": 393643734
+      }
+    }
+  },
+  "nepali": {
+    "manual": {
+      "docs": 85917,
+      "chars": 184674162,
+      "words": 29298940,
+      "pretokens": 32629306,
+      "avg_words_per_doc": 341.0,
+      "avg_chars_per_word": 6.3
+    },
+    "downloaded_total": {
+      "docs": 1709231,
+      "chars": 4339227608,
+      "words": 679546227,
+      "pretokens": 740577500,
+      "avg_words_per_doc": 397.6,
+      "avg_chars_per_word": 6.39
+    },
+    "downloaded_by_source": {
+      "cc100": {
+        "docs": 125260,
+        "chars": 38455085,
+        "words": 6088202,
+        "pretokens": 6538577,
+        "avg_words_per_doc": 48.6,
+        "avg_chars_per_word": 6.32
+      },
+      "madlad": {
+        "docs": 405005,
+        "chars": 1950527409,
+        "words": 311460937,
+        "pretokens": 344014872,
+        "avg_words_per_doc": 769.0,
+        "avg_chars_per_word": 6.26
+      },
+      "mc4": {
+        "docs": 259744,
+        "chars": 679011022,
+        "words": 105494478,
+        "pretokens": 114935711,
+        "avg_words_per_doc": 406.1,
+        "avg_chars_per_word": 6.44
+      },
+      "sangraha": {
+        "docs": 472651,
+        "chars": 880269287,
+        "words": 133777923,
+        "pretokens": 142961417,
+        "avg_words_per_doc": 283.0,
+        "avg_chars_per_word": 6.58
+      },
+      "sangraha_verified": {
+        "docs": 446571,
+        "chars": 790964805,
+        "words": 122724687,
+        "pretokens": 132126923,
+        "avg_words_per_doc": 274.8,
+        "avg_chars_per_word": 6.45
+      }
+    },
+    "combined_if_all_used": {
+      "docs": 1795148,
+      "chars": 4523901770,
+      "words": 708845167,
+      "pretokens": 773206806,
+      "avg_words_per_doc": 394.9,
+      "avg_chars_per_word": 6.38
+    },
+    "manual_word_frac_if_all_used": 0.0413,
+    "mix_plans": {
+      "20pct": {
+        "target_manual_frac": 0.2,
+        "downloaded_words_to_keep": 117195760,
+        "downloaded_sample_ratio": 0.1725,
+        "total_words": 146494700,
+        "manual_frac_achieved": 0.2,
+        "manual_limited": false,
+        "projected_tokens_low": 205092580,
+        "projected_tokens_high": 322288340
+      },
+      "25pct": {
+        "target_manual_frac": 0.25,
+        "downloaded_words_to_keep": 87896820,
+        "downloaded_sample_ratio": 0.1293,
+        "total_words": 117195760,
+        "manual_frac_achieved": 0.25,
+        "manual_limited": false,
+        "projected_tokens_low": 164074064,
+        "projected_tokens_high": 257830672
+      },
+      "30pct": {
+        "target_manual_frac": 0.3,
+        "downloaded_words_to_keep": 68364193,
+        "downloaded_sample_ratio": 0.1006,
+        "total_words": 97663133,
+        "manual_frac_achieved": 0.3,
+        "manual_limited": false,
+        "projected_tokens_low": 136728387,
+        "projected_tokens_high": 214858893
+      }
+    }
+  }
+}

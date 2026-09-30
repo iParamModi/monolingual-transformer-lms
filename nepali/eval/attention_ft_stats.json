@@ -1,0 +1,1490 @@
+{
+  "lang": "ne",
+  "model_tag": "L",
+  "split": "test_templates",
+  "n_sequences": 64,
+  "pretrained_checkpoint": "nepali/checkpoints/ckpt_final.pt",
+  "finetuned_checkpoint": "nepali/checkpoints_ft/ckpt_ft_final.pt",
+  "pretrained": {
+    "overall": {
+      "normalized_entropy": 0.6291,
+      "normalized_distance": 0.5313,
+      "previous_token_rate": 0.1822,
+      "sink_rate": 0.3392
+    },
+    "per_layer": {
+      "0": {
+        "normalized_entropy": 0.8793,
+        "normalized_distance": 0.5381,
+        "previous_token_rate": 0.1186,
+        "sink_rate": 0.2428
+      },
+      "1": {
+        "normalized_entropy": 0.6838,
+        "normalized_distance": 0.6178,
+        "previous_token_rate": 0.1116,
+        "sink_rate": 0.4399
+      },
+      "2": {
+        "normalized_entropy": 0.6773,
+        "normalized_distance": 0.4976,
+        "previous_token_rate": 0.1983,
+        "sink_rate": 0.3364
+      },
+      "3": {
+        "normalized_entropy": 0.5309,
+        "normalized_distance": 0.384,
+        "previous_token_rate": 0.3131,
+        "sink_rate": 0.2401
+      },
+      "4": {
+        "normalized_entropy": 0.5118,
+        "normalized_distance": 0.474,
+        "previous_token_rate": 0.2656,
+        "sink_rate": 0.2964
+      },
+      "5": {
+        "normalized_entropy": 0.4913,
+        "normalized_distance": 0.6764,
+        "previous_token_rate": 0.0859,
+        "sink_rate": 0.4794
+      }
+    },
+    "head_taxonomy": {
+      "content-based": 24,
+      "mixed": 3,
+      "sink": 21
+    },
+    "cells": [
+      {
+        "layer": 0,
+        "head": 0,
+        "entropy": 2.151499083193788,
+        "normalized_entropy": 0.8750745161657892,
+        "mean_distance": 6.288015646432692,
+        "normalized_distance": 0.524632586469564,
+        "previous_token_rate": 0.13272817141842097,
+        "sink_rate": 0.2082554348744452
+      },
+      {
+        "layer": 0,
+        "head": 1,
+        "entropy": 2.107887404140316,
+        "normalized_entropy": 0.862785522016795,
+        "mean_distance": 6.437411289367332,
+        "normalized_distance": 0.5375709661960133,
+        "previous_token_rate": 0.11377161310520023,
+        "sink_rate": 0.2248467116151005
+      },
+      {
+        "layer": 0,
+        "head": 2,
+        "entropy": 2.2692823207955355,
+        "normalized_entropy": 0.9326878251749331,
+        "mean_distance": 6.011609227921687,
+        "normalized_distance": 0.4975917055571877,
+        "previous_token_rate": 0.11629054613877088,
+        "sink_rate": 0.18788115656934679
+      },
+      {
+        "layer": 0,
+        "head": 3,
+        "entropy": 2.134712178730205,
+        "normalized_entropy": 0.86658619637536,
+        "mean_distance": 6.72476410622421,
+        "normalized_distance": 0.5620916274237119,
+        "previous_token_rate": 0.11366099934093654,
+        "sink_rate": 0.29849412362091243
+      },
+      {
+        "layer": 0,
+        "head": 4,
+        "entropy": 2.166599953057635,
+        "normalized_entropy": 0.8961258029442399,
+        "mean_distance": 7.052817303791752,
+        "normalized_distance": 0.5545227292158479,
+        "previous_token_rate": 0.10401005682069808,
+        "sink_rate": 0.2827916690148413
+      },
+      {
+        "layer": 0,
+        "head": 5,
+        "entropy": 2.0641511584709042,
+        "normalized_entropy": 0.8468852605304191,
+        "mean_distance": 6.157450181329336,
+        "normalized_distance": 0.518985582668726,
+        "previous_token_rate": 0.1425811245571822,
+        "sink_rate": 0.23861660715192556
+      },
+      {
+        "layer": 0,
+        "head": 6,
+        "entropy": 2.14302869109364,
+        "normalized_entropy": 0.8820834702138831,
+        "mean_distance": 6.26426833694658,
+        "normalized_distance": 0.5176169684788317,
+        "previous_token_rate": 0.1340616017114371,
+        "sink_rate": 0.22107426775619388
+      },
+      {
+        "layer": 0,
+        "head": 7,
+        "entropy": 2.124190583981715,
+        "normalized_entropy": 0.8725512112325704,
+        "mean_distance": 7.396331777308626,
+        "normalized_distance": 0.5920280307669707,
+        "previous_token_rate": 0.09180796646978706,
+        "sink_rate": 0.28051861212588847
+      },
+      {
+        "layer": 1,
+        "head": 0,
+        "entropy": 1.6354190199162808,
+        "normalized_entropy": 0.6377649479916094,
+        "mean_distance": 7.475131554392665,
+        "normalized_distance": 0.6527313838890851,
+        "previous_token_rate": 0.11728507978841662,
+        "sink_rate": 0.5386992217972875
+      },
+      {
+        "layer": 1,
+        "head": 1,
+        "entropy": 2.1415689881866147,
+        "normalized_entropy": 0.8640198719332361,
+        "mean_distance": 5.67609412226123,
+        "normalized_distance": 0.4919273162749927,
+        "previous_token_rate": 0.1307701412588358,
+        "sink_rate": 0.22446832875721157
+      },
+      {
+        "layer": 1,
+        "head": 2,
+        "entropy": 1.8132071915132144,
+        "normalized_entropy": 0.7358152888742456,
+        "mean_distance": 7.794674165765533,
+        "normalized_distance": 0.633758402010377,
+        "previous_token_rate": 0.08663952711503953,
+        "sink_rate": 0.41982454201206565
+      },
+      {
+        "layer": 1,
+        "head": 3,
+        "entropy": 1.983835006788786,
+        "normalized_entropy": 0.7684512728269168,
+        "mean_distance": 6.0534809057033385,
+        "normalized_distance": 0.5569673941931252,
+        "previous_token_rate": 0.1307056195801124,
+        "sink_rate": 0.35859610326588154
+      },
+      {
+        "layer": 1,
+        "head": 4,
+        "entropy": 1.7498340518323516,
+        "normalized_entropy": 0.7138498378820229,
+        "mean_distance": 8.731865410729299,
+        "normalized_distance": 0.6939834605920945,
+        "previous_token_rate": 0.0943759981309995,
+        "sink_rate": 0.5195236457511783
+      },
+      {
+        "layer": 1,
+        "head": 5,
+        "entropy": 0.7940611576556142,
+        "normalized_entropy": 0.30225247574725306,
+        "mean_distance": 11.031489490303784,
+        "normalized_distance": 0.8792178084781039,
+        "previous_token_rate": 0.05373831739416346,
+        "sink_rate": 0.8383107101544738
+      },
+      {
+        "layer": 1,
+        "head": 6,
+        "entropy": 2.018207954578855,
+        "normalized_entropy": 0.8150760040952497,
+        "mean_distance": 4.467484913961262,
+        "normalized_distance": 0.43131817489078284,
+        "previous_token_rate": 0.1846950650215149,
+        "sink_rate": 0.2261780460830778
+      },
+      {
+        "layer": 1,
+        "head": 7,
+        "entropy": 1.5886820096798244,
+        "normalized_entropy": 0.6328835519148963,
+        "mean_distance": 6.866561443211827,
+        "normalized_distance": 0.6028755371294093,
+        "previous_token_rate": 0.09472951770294458,
+        "sink_rate": 0.39377898583188653
+      },
+      {
+        "layer": 2,
+        "head": 0,
+        "entropy": 1.7781111456920458,
+        "normalized_entropy": 0.6809798292968035,
+        "mean_distance": 7.014198923866909,
+        "normalized_distance": 0.6326551307438282,
+        "previous_token_rate": 0.10253655875567347,
+        "sink_rate": 0.4817834463901818
+      },
+      {
+        "layer": 2,
+        "head": 1,
+        "entropy": 1.8239367182278954,
+        "normalized_entropy": 0.7422810342172725,
+        "mean_distance": 3.7734724962659945,
+        "normalized_distance": 0.3984742922559305,
+        "previous_token_rate": 0.23027500230818987,
+        "sink_rate": 0.23935238760896027
+      },
+      {
+        "layer": 2,
+        "head": 2,
+        "entropy": 1.684975588891099,
+        "normalized_entropy": 0.6863435226787054,
+        "mean_distance": 2.746624985079462,
+        "normalized_distance": 0.3279448116274617,
+        "previous_token_rate": 0.26173504162579775,
+        "sink_rate": 0.1584612837759778
+      },
+      {
+        "layer": 2,
+        "head": 3,
+        "entropy": 2.173227815890439,
+        "normalized_entropy": 0.8747768945386891,
+        "mean_distance": 6.489123116155158,
+        "normalized_distance": 0.5513152438093092,
+        "previous_token_rate": 0.12053822667803615,
+        "sink_rate": 0.26110714534297585
+      },
+      {
+        "layer": 2,
+        "head": 4,
+        "entropy": 1.2996428975575005,
+        "normalized_entropy": 0.5257623013705208,
+        "mean_distance": 3.214672318106059,
+        "normalized_distance": 0.3449934407431576,
+        "previous_token_rate": 0.43537589255720377,
+        "sink_rate": 0.21814905991777778
+      },
+      {
+        "layer": 2,
+        "head": 5,
+        "entropy": 1.9070909891712435,
+        "normalized_entropy": 0.7597369402194678,
+        "mean_distance": 5.702467746383362,
+        "normalized_distance": 0.5278075646590363,
+        "previous_token_rate": 0.13465653581079096,
+        "sink_rate": 0.32715441775508225
+      },
+      {
+        "layer": 2,
+        "head": 6,
+        "entropy": 1.8174156000082773,
+        "normalized_entropy": 0.7439894052505156,
+        "mean_distance": 4.021810515187186,
+        "normalized_distance": 0.4037519325891038,
+        "previous_token_rate": 0.21867508976720273,
+        "sink_rate": 0.24980805069208145
+      },
+      {
+        "layer": 2,
+        "head": 7,
+        "entropy": 1.0538883161434371,
+        "normalized_entropy": 0.40456026029734005,
+        "mean_distance": 9.568638938169096,
+        "normalized_distance": 0.7939858420817101,
+        "previous_token_rate": 0.08224968367721885,
+        "sink_rate": 0.7554253423586488
+      },
+      {
+        "layer": 3,
+        "head": 0,
+        "entropy": 0.543574911268732,
+        "normalized_entropy": 0.2322861472448834,
+        "mean_distance": 1.2577031317172869,
+        "normalized_distance": 0.19307312959142536,
+        "previous_token_rate": 0.6655124686658382,
+        "sink_rate": 0.07841758173890412
+      },
+      {
+        "layer": 3,
+        "head": 1,
+        "entropy": 1.6993949943791042,
+        "normalized_entropy": 0.6648879663869481,
+        "mean_distance": 4.090969368451412,
+        "normalized_distance": 0.44780455533317187,
+        "previous_token_rate": 0.14901323069352657,
+        "sink_rate": 0.29589911620132625
+      },
+      {
+        "layer": 3,
+        "head": 2,
+        "entropy": 1.3590153148334951,
+        "normalized_entropy": 0.566845533476057,
+        "mean_distance": 2.0976452310449645,
+        "normalized_distance": 0.2790684393493763,
+        "previous_token_rate": 0.3022603348363191,
+        "sink_rate": 0.15100690152030438
+      },
+      {
+        "layer": 3,
+        "head": 3,
+        "entropy": 1.4870420955345882,
+        "normalized_entropy": 0.5807439557168226,
+        "mean_distance": 8.121788135990805,
+        "normalized_distance": 0.6842138172951993,
+        "previous_token_rate": 0.08366186037892476,
+        "sink_rate": 0.513850296381861
+      },
+      {
+        "layer": 3,
+        "head": 4,
+        "entropy": 1.7190534880260389,
+        "normalized_entropy": 0.6972036636370018,
+        "mean_distance": 3.215933112308514,
+        "normalized_distance": 0.3651298446637815,
+        "previous_token_rate": 0.20300506451167166,
+        "sink_rate": 0.18576157302595675
+      },
+      {
+        "layer": 3,
+        "head": 5,
+        "entropy": 0.8200120781121081,
+        "normalized_entropy": 0.3379208163240792,
+        "mean_distance": 1.4335753074665916,
+        "normalized_distance": 0.1932306790568967,
+        "previous_token_rate": 0.6520125744864345,
+        "sink_rate": 0.06632979543064721
+      },
+      {
+        "layer": 3,
+        "head": 6,
+        "entropy": 1.596372919983951,
+        "normalized_entropy": 0.6216425351342737,
+        "mean_distance": 5.850063477198014,
+        "normalized_distance": 0.5689725921489941,
+        "previous_token_rate": 0.1304522348800674,
+        "sink_rate": 0.42286253347992897
+      },
+      {
+        "layer": 3,
+        "head": 7,
+        "entropy": 1.35754790840713,
+        "normalized_entropy": 0.5459283844143017,
+        "mean_distance": 2.9587797779260794,
+        "normalized_distance": 0.3404780109821509,
+        "previous_token_rate": 0.3188207894563675,
+        "sink_rate": 0.20683733234182
+      },
+      {
+        "layer": 4,
+        "head": 0,
+        "entropy": 1.4410408295685275,
+        "normalized_entropy": 0.5983535088348356,
+        "mean_distance": 3.5546711294929754,
+        "normalized_distance": 0.3769368834589147,
+        "previous_token_rate": 0.203624029411003,
+        "sink_rate": 0.18438166927080601
+      },
+      {
+        "layer": 4,
+        "head": 1,
+        "entropy": 1.6496630986564482,
+        "normalized_entropy": 0.6632548832511983,
+        "mean_distance": 4.814802385556994,
+        "normalized_distance": 0.4275369211867921,
+        "previous_token_rate": 0.27534453151747584,
+        "sink_rate": 0.24051306582987309
+      },
+      {
+        "layer": 4,
+        "head": 2,
+        "entropy": 0.23155726890141462,
+        "normalized_entropy": 0.08757947592541843,
+        "mean_distance": 1.3581889327138412,
+        "normalized_distance": 0.17640321266947734,
+        "previous_token_rate": 0.9065768932923675,
+        "sink_rate": 0.04792955802986398
+      },
+      {
+        "layer": 4,
+        "head": 3,
+        "entropy": 1.5184544848855361,
+        "normalized_entropy": 0.6213941214079309,
+        "mean_distance": 3.1599016125132264,
+        "normalized_distance": 0.348369483439383,
+        "previous_token_rate": 0.2739368116017431,
+        "sink_rate": 0.186020253226161
+      },
+      {
+        "layer": 4,
+        "head": 4,
+        "entropy": 1.6922689181429813,
+        "normalized_entropy": 0.662593537739915,
+        "mean_distance": 6.891635407123804,
+        "normalized_distance": 0.5961096197998776,
+        "previous_token_rate": 0.12946716148871928,
+        "sink_rate": 0.3591390876099467
+      },
+      {
+        "layer": 4,
+        "head": 5,
+        "entropy": 0.785565311131112,
+        "normalized_entropy": 0.2940621509637509,
+        "mean_distance": 9.20507697810797,
+        "normalized_distance": 0.7695471682839973,
+        "previous_token_rate": 0.05950790282804519,
+        "sink_rate": 0.604469935875386
+      },
+      {
+        "layer": 4,
+        "head": 6,
+        "entropy": 1.2992269634979219,
+        "normalized_entropy": 0.5144496899465021,
+        "mean_distance": 4.416326343476609,
+        "normalized_distance": 0.4528916446569925,
+        "previous_token_rate": 0.16589457751251757,
+        "sink_rate": 0.29949010140262544
+      },
+      {
+        "layer": 4,
+        "head": 7,
+        "entropy": 1.640624015271269,
+        "normalized_entropy": 0.6529278053410323,
+        "mean_distance": 7.616770213875919,
+        "normalized_distance": 0.6443087100090286,
+        "previous_token_rate": 0.11021878174506128,
+        "sink_rate": 0.4492710749618709
+      },
+      {
+        "layer": 5,
+        "head": 0,
+        "entropy": 1.5025820046494953,
+        "normalized_entropy": 0.5875729364350994,
+        "mean_distance": 6.907230691307408,
+        "normalized_distance": 0.6118056150887821,
+        "previous_token_rate": 0.10700789489783347,
+        "sink_rate": 0.39711160911247134
+      },
+      {
+        "layer": 5,
+        "head": 1,
+        "entropy": 1.464670474250434,
+        "normalized_entropy": 0.5539427328324635,
+        "mean_distance": 7.9632780558260245,
+        "normalized_distance": 0.6879796933838835,
+        "previous_token_rate": 0.07658587372861803,
+        "sink_rate": 0.45502376556396484
+      },
+      {
+        "layer": 5,
+        "head": 2,
+        "entropy": 1.8340853809972226,
+        "normalized_entropy": 0.7223505031274284,
+        "mean_distance": 6.02818615947216,
+        "normalized_distance": 0.5267144251058374,
+        "previous_token_rate": 0.13360547414049506,
+        "sink_rate": 0.270943739451468
+      },
+      {
+        "layer": 5,
+        "head": 3,
+        "entropy": 1.2939862840207952,
+        "normalized_entropy": 0.4950188892674685,
+        "mean_distance": 9.001300186762947,
+        "normalized_distance": 0.7542766609714605,
+        "previous_token_rate": 0.06456580245867372,
+        "sink_rate": 0.5942962961271405
+      },
+      {
+        "layer": 5,
+        "head": 4,
+        "entropy": 0.7932112210546536,
+        "normalized_entropy": 0.2881258017919236,
+        "mean_distance": 9.024338492882876,
+        "normalized_distance": 0.7632841620428912,
+        "previous_token_rate": 0.06018150219460949,
+        "sink_rate": 0.6201014872640371
+      },
+      {
+        "layer": 5,
+        "head": 5,
+        "entropy": 0.9441288947918378,
+        "normalized_entropy": 0.3490640291999362,
+        "mean_distance": 8.714640102611693,
+        "normalized_distance": 0.7428149406086482,
+        "previous_token_rate": 0.06411456095520407,
+        "sink_rate": 0.5564222075045109
+      },
+      {
+        "layer": 5,
+        "head": 6,
+        "entropy": 1.0448049218068207,
+        "normalized_entropy": 0.38385528436898475,
+        "mean_distance": 8.682073705888229,
+        "normalized_distance": 0.7423036192130601,
+        "previous_token_rate": 0.06372194032883272,
+        "sink_rate": 0.5533890263177454
+      },
+      {
+        "layer": 5,
+        "head": 7,
+        "entropy": 1.4532884100766945,
+        "normalized_entropy": 0.5501075800167101,
+        "mean_distance": 6.380022553274748,
+        "normalized_distance": 0.5816543131940923,
+        "previous_token_rate": 0.11750170774757862,
+        "sink_rate": 0.38804491190239787
+      }
+    ]
+  },
+  "finetuned": {
+    "overall": {
+      "normalized_entropy": 0.6471,
+      "normalized_distance": 0.4701,
+      "previous_token_rate": 0.1734,
+      "sink_rate": 0.2271
+    },
+    "per_layer": {
+      "0": {
+        "normalized_entropy": 0.8722,
+        "normalized_distance": 0.5539,
+        "previous_token_rate": 0.1097,
+        "sink_rate": 0.2464
+      },
+      "1": {
+        "normalized_entropy": 0.7745,
+        "normalized_distance": 0.571,
+        "previous_token_rate": 0.1222,
+        "sink_rate": 0.3341
+      },
+      "2": {
+        "normalized_entropy": 0.7137,
+        "normalized_distance": 0.4372,
+        "previous_token_rate": 0.203,
+        "sink_rate": 0.21
+      },
+      "3": {
+        "normalized_entropy": 0.5272,
+        "normalized_distance": 0.3494,
+        "previous_token_rate": 0.26,
+        "sink_rate": 0.144
+      },
+      "4": {
+        "normalized_entropy": 0.492,
+        "normalized_distance": 0.3627,
+        "previous_token_rate": 0.2377,
+        "sink_rate": 0.1328
+      },
+      "5": {
+        "normalized_entropy": 0.5033,
+        "normalized_distance": 0.5465,
+        "previous_token_rate": 0.1076,
+        "sink_rate": 0.2955
+      }
+    },
+    "head_taxonomy": {
+      "content-based": 35,
+      "mixed": 4,
+      "sink": 9
+    },
+    "cells": [
+      {
+        "layer": 0,
+        "head": 0,
+        "entropy": 2.088564264081417,
+        "normalized_entropy": 0.8611384180196655,
+        "mean_distance": 6.870857984493674,
+        "normalized_distance": 0.5449014678655464,
+        "previous_token_rate": 0.12078223167918622,
+        "sink_rate": 0.21902868384495378
+      },
+      {
+        "layer": 0,
+        "head": 1,
+        "entropy": 2.049961849478057,
+        "normalized_entropy": 0.847144141037177,
+        "mean_distance": 6.930845155734629,
+        "normalized_distance": 0.5661142198083843,
+        "previous_token_rate": 0.10024111554957926,
+        "sink_rate": 0.24689920106902719
+      },
+      {
+        "layer": 0,
+        "head": 2,
+        "entropy": 2.2547970402009954,
+        "normalized_entropy": 0.9274859159757953,
+        "mean_distance": 6.317676119704662,
+        "normalized_distance": 0.5005548583245074,
+        "previous_token_rate": 0.11156708386261016,
+        "sink_rate": 0.18913374887779355
+      },
+      {
+        "layer": 0,
+        "head": 3,
+        "entropy": 2.137702371365025,
+        "normalized_entropy": 0.8821404872360769,
+        "mean_distance": 7.171558973994491,
+        "normalized_distance": 0.5719603815573504,
+        "previous_token_rate": 0.10006380453705788,
+        "sink_rate": 0.2787891514599323
+      },
+      {
+        "layer": 0,
+        "head": 4,
+        "entropy": 2.142835628479342,
+        "normalized_entropy": 0.887022598462649,
+        "mean_distance": 7.136684503066478,
+        "normalized_distance": 0.5559154614797968,
+        "previous_token_rate": 0.10464688786305487,
+        "sink_rate": 0.2770306763704866
+      },
+      {
+        "layer": 0,
+        "head": 5,
+        "entropy": 1.983100900962218,
+        "normalized_entropy": 0.8239901640608982,
+        "mean_distance": 6.996086778834432,
+        "normalized_distance": 0.553944300247373,
+        "previous_token_rate": 0.13994912907946855,
+        "sink_rate": 0.27704969653859735
+      },
+      {
+        "layer": 0,
+        "head": 6,
+        "entropy": 2.1791658630127473,
+        "normalized_entropy": 0.9022788349986139,
+        "mean_distance": 6.622794567276198,
+        "normalized_distance": 0.5219231381107263,
+        "previous_token_rate": 0.11107863986399025,
+        "sink_rate": 0.20387340779416263
+      },
+      {
+        "layer": 0,
+        "head": 7,
+        "entropy": 2.0397555992871963,
+        "normalized_entropy": 0.8466420650151972,
+        "mean_distance": 8.015780454333743,
+        "normalized_distance": 0.6159926664530104,
+        "previous_token_rate": 0.08896369638387114,
+        "sink_rate": 0.27975460747256875
+      },
+      {
+        "layer": 1,
+        "head": 0,
+        "entropy": 1.8932782951132148,
+        "normalized_entropy": 0.7578211556071472,
+        "mean_distance": 6.47876041743317,
+        "normalized_distance": 0.560917519310558,
+        "previous_token_rate": 0.1485970556968823,
+        "sink_rate": 0.39034151611849666
+      },
+      {
+        "layer": 1,
+        "head": 1,
+        "entropy": 2.1985375097728412,
+        "normalized_entropy": 0.8935664822873826,
+        "mean_distance": 5.647368485558781,
+        "normalized_distance": 0.4675221050751464,
+        "previous_token_rate": 0.1443815923994407,
+        "sink_rate": 0.16750620119273663
+      },
+      {
+        "layer": 1,
+        "head": 2,
+        "entropy": 1.7231121483306473,
+        "normalized_entropy": 0.6936782763931617,
+        "mean_distance": 8.19538276620313,
+        "normalized_distance": 0.6696996059392343,
+        "previous_token_rate": 0.0827947246725671,
+        "sink_rate": 0.45566887920722365
+      },
+      {
+        "layer": 1,
+        "head": 3,
+        "entropy": 2.1203295069188046,
+        "normalized_entropy": 0.8455066357738257,
+        "mean_distance": 5.811226120527474,
+        "normalized_distance": 0.5034559242464572,
+        "previous_token_rate": 0.14193347934633493,
+        "sink_rate": 0.2403992919716984
+      },
+      {
+        "layer": 1,
+        "head": 4,
+        "entropy": 1.8600187958257581,
+        "normalized_entropy": 0.7659350740361817,
+        "mean_distance": 8.537392048131938,
+        "normalized_distance": 0.6615760880076385,
+        "previous_token_rate": 0.10073193127755076,
+        "sink_rate": 0.4495988809503615
+      },
+      {
+        "layer": 1,
+        "head": 5,
+        "entropy": 1.5970129679317566,
+        "normalized_entropy": 0.6263618242714108,
+        "mean_distance": 9.177602351347605,
+        "normalized_distance": 0.7485594254197898,
+        "previous_token_rate": 0.07683578151045367,
+        "sink_rate": 0.5816354895941913
+      },
+      {
+        "layer": 1,
+        "head": 6,
+        "entropy": 2.0816465198935155,
+        "normalized_entropy": 0.8496362211993438,
+        "mean_distance": 4.526081945631181,
+        "normalized_distance": 0.40971140385117333,
+        "previous_token_rate": 0.19225071603432298,
+        "sink_rate": 0.15612954983953387
+      },
+      {
+        "layer": 1,
+        "head": 7,
+        "entropy": 1.8628890543859753,
+        "normalized_entropy": 0.7633549200559239,
+        "mean_distance": 6.85598015594791,
+        "normalized_distance": 0.5465387162259918,
+        "previous_token_rate": 0.08984226867323741,
+        "sink_rate": 0.23186052008531988
+      },
+      {
+        "layer": 2,
+        "head": 0,
+        "entropy": 1.7235856494472293,
+        "normalized_entropy": 0.6804545399411153,
+        "mean_distance": 7.272578090159016,
+        "normalized_distance": 0.6133699489115068,
+        "previous_token_rate": 0.11163331486750394,
+        "sink_rate": 0.44023486925289035
+      },
+      {
+        "layer": 2,
+        "head": 1,
+        "entropy": 1.8274238800078357,
+        "normalized_entropy": 0.7375828372490982,
+        "mean_distance": 4.082922063828743,
+        "normalized_distance": 0.38863868399532575,
+        "previous_token_rate": 0.2150088706985116,
+        "sink_rate": 0.15280729136429727
+      },
+      {
+        "layer": 2,
+        "head": 2,
+        "entropy": 1.5761223591890265,
+        "normalized_entropy": 0.6425877962655584,
+        "mean_distance": 3.0399038418090525,
+        "normalized_distance": 0.3424869839348879,
+        "previous_token_rate": 0.24683979689143598,
+        "sink_rate": 0.14848129055462778
+      },
+      {
+        "layer": 2,
+        "head": 3,
+        "entropy": 2.0859041545569017,
+        "normalized_entropy": 0.8370579051896321,
+        "mean_distance": 5.496761768421987,
+        "normalized_distance": 0.4733698054554375,
+        "previous_token_rate": 0.13811558205634356,
+        "sink_rate": 0.18652324983850121
+      },
+      {
+        "layer": 2,
+        "head": 4,
+        "entropy": 1.3517019231059262,
+        "normalized_entropy": 0.5475092430592616,
+        "mean_distance": 3.79863925777018,
+        "normalized_distance": 0.3456004519051342,
+        "previous_token_rate": 0.3983478778973222,
+        "sink_rate": 0.16174521471839398
+      },
+      {
+        "layer": 2,
+        "head": 5,
+        "entropy": 1.7496199167642774,
+        "normalized_entropy": 0.7073493592613159,
+        "mean_distance": 6.360124206620778,
+        "normalized_distance": 0.5384028250933062,
+        "previous_token_rate": 0.12218974367715418,
+        "sink_rate": 0.25920063199009746
+      },
+      {
+        "layer": 2,
+        "head": 6,
+        "entropy": 1.8949301308363935,
+        "normalized_entropy": 0.7768962185519246,
+        "mean_distance": 4.235933040270539,
+        "normalized_distance": 0.3903968136111782,
+        "previous_token_rate": 0.2148121588397771,
+        "sink_rate": 0.14615124533884227
+      },
+      {
+        "layer": 2,
+        "head": 7,
+        "entropy": 1.8947385838917907,
+        "normalized_entropy": 0.7801287615982747,
+        "mean_distance": 4.436985300074515,
+        "normalized_distance": 0.4054210230846278,
+        "previous_token_rate": 0.1767812434118241,
+        "sink_rate": 0.18477919115684927
+      },
+      {
+        "layer": 3,
+        "head": 0,
+        "entropy": 0.5823657389153845,
+        "normalized_entropy": 0.23444347462358656,
+        "mean_distance": 2.271808698972456,
+        "normalized_distance": 0.2110581603701367,
+        "previous_token_rate": 0.4394581224769354,
+        "sink_rate": 0.06517961326244404
+      },
+      {
+        "layer": 3,
+        "head": 1,
+        "entropy": 1.718195822544784,
+        "normalized_entropy": 0.6868355357872216,
+        "mean_distance": 5.203888192920521,
+        "normalized_distance": 0.44579091578572466,
+        "previous_token_rate": 0.1486370232887566,
+        "sink_rate": 0.1794417684432119
+      },
+      {
+        "layer": 3,
+        "head": 2,
+        "entropy": 1.2272538455509512,
+        "normalized_entropy": 0.5004505182853356,
+        "mean_distance": 2.939737245000738,
+        "normalized_distance": 0.2821580102714295,
+        "previous_token_rate": 0.2772101254668087,
+        "sink_rate": 0.11694883019663393
+      },
+      {
+        "layer": 3,
+        "head": 3,
+        "entropy": 1.53888586883389,
+        "normalized_entropy": 0.6313499295121814,
+        "mean_distance": 6.307841933648364,
+        "normalized_distance": 0.5355319467533203,
+        "previous_token_rate": 0.10244818974751979,
+        "sink_rate": 0.31811251142062247
+      },
+      {
+        "layer": 3,
+        "head": 4,
+        "entropy": 1.5969009816881967,
+        "normalized_entropy": 0.644530588417088,
+        "mean_distance": 3.8918658113948594,
+        "normalized_distance": 0.34989019123372855,
+        "previous_token_rate": 0.20545157021842897,
+        "sink_rate": 0.13095691509079188
+      },
+      {
+        "layer": 3,
+        "head": 5,
+        "entropy": 0.7347726538122943,
+        "normalized_entropy": 0.29250357714921627,
+        "mean_distance": 2.477010446996903,
+        "normalized_distance": 0.21351366368842395,
+        "previous_token_rate": 0.4420287702232599,
+        "sink_rate": 0.048750271136668744
+      },
+      {
+        "layer": 3,
+        "head": 6,
+        "entropy": 1.8180387710417913,
+        "normalized_entropy": 0.7398332053014183,
+        "mean_distance": 5.286414459226614,
+        "normalized_distance": 0.44415108170487805,
+        "previous_token_rate": 0.16703661158680916,
+        "sink_rate": 0.14699542382732034
+      },
+      {
+        "layer": 3,
+        "head": 7,
+        "entropy": 1.2140919260471563,
+        "normalized_entropy": 0.4875461185503056,
+        "mean_distance": 3.7448581072212677,
+        "normalized_distance": 0.31279420001330577,
+        "previous_token_rate": 0.2981017674319446,
+        "sink_rate": 0.14534274878678843
+      },
+      {
+        "layer": 4,
+        "head": 0,
+        "entropy": 1.3586129535350362,
+        "normalized_entropy": 0.5573857778225955,
+        "mean_distance": 3.404719568208372,
+        "normalized_distance": 0.30014023642704957,
+        "previous_token_rate": 0.25559657299891114,
+        "sink_rate": 0.09412390884244815
+      },
+      {
+        "layer": 4,
+        "head": 1,
+        "entropy": 1.3178490659206226,
+        "normalized_entropy": 0.5242179390705186,
+        "mean_distance": 3.9128591185505135,
+        "normalized_distance": 0.32136234364220606,
+        "previous_token_rate": 0.2502457960508764,
+        "sink_rate": 0.1286908053443767
+      },
+      {
+        "layer": 4,
+        "head": 2,
+        "entropy": 0.36092715648074075,
+        "normalized_entropy": 0.14312368826680066,
+        "mean_distance": 2.9679185072500425,
+        "normalized_distance": 0.23524776091157434,
+        "previous_token_rate": 0.5602808631956577,
+        "sink_rate": 0.03809716360274251
+      },
+      {
+        "layer": 4,
+        "head": 3,
+        "entropy": 1.3226550568027973,
+        "normalized_entropy": 0.5404331578258672,
+        "mean_distance": 4.147242268501587,
+        "normalized_distance": 0.3377769033955311,
+        "previous_token_rate": 0.26908502308651805,
+        "sink_rate": 0.1569766315515153
+      },
+      {
+        "layer": 4,
+        "head": 4,
+        "entropy": 1.589162867212512,
+        "normalized_entropy": 0.6379823367358171,
+        "mean_distance": 6.053262719614107,
+        "normalized_distance": 0.499495722700126,
+        "previous_token_rate": 0.14820891339331865,
+        "sink_rate": 0.1665221891598776
+      },
+      {
+        "layer": 4,
+        "head": 5,
+        "entropy": 0.8823715523887214,
+        "normalized_entropy": 0.3488085365418573,
+        "mean_distance": 6.014459661697478,
+        "normalized_distance": 0.46838468907796205,
+        "previous_token_rate": 0.08970667206449434,
+        "sink_rate": 0.24757634731940925
+      },
+      {
+        "layer": 4,
+        "head": 6,
+        "entropy": 1.3498257863585832,
+        "normalized_entropy": 0.5462785105753305,
+        "mean_distance": 4.241770594397625,
+        "normalized_distance": 0.3462106776046736,
+        "previous_token_rate": 0.17890644073486328,
+        "sink_rate": 0.10648283077171072
+      },
+      {
+        "layer": 4,
+        "head": 7,
+        "entropy": 1.5291584208765507,
+        "normalized_entropy": 0.6375386629566658,
+        "mean_distance": 4.777034192278779,
+        "normalized_distance": 0.3926456439228939,
+        "previous_token_rate": 0.14995535486377776,
+        "sink_rate": 0.12423838107497431
+      },
+      {
+        "layer": 5,
+        "head": 0,
+        "entropy": 1.2269763543355323,
+        "normalized_entropy": 0.5066062113309802,
+        "mean_distance": 5.702906605303365,
+        "normalized_distance": 0.4496140340381926,
+        "previous_token_rate": 0.1556337677175179,
+        "sink_rate": 0.22867388604208827
+      },
+      {
+        "layer": 5,
+        "head": 1,
+        "entropy": 1.2468531915276377,
+        "normalized_entropy": 0.5139159941204856,
+        "mean_distance": 8.840464230869486,
+        "normalized_distance": 0.6962917678386423,
+        "previous_token_rate": 0.08352214994374663,
+        "sink_rate": 0.3783347012940794
+      },
+      {
+        "layer": 5,
+        "head": 2,
+        "entropy": 1.490634712594285,
+        "normalized_entropy": 0.5987109647631395,
+        "mean_distance": 6.308469488051955,
+        "normalized_distance": 0.5073829716697279,
+        "previous_token_rate": 0.14112105558160692,
+        "sink_rate": 0.29120701760984957
+      },
+      {
+        "layer": 5,
+        "head": 3,
+        "entropy": 1.49183434912027,
+        "normalized_entropy": 0.6018695480576521,
+        "mean_distance": 6.422652185848165,
+        "normalized_distance": 0.5300077101229027,
+        "previous_token_rate": 0.1001080428250134,
+        "sink_rate": 0.2578416981268674
+      },
+      {
+        "layer": 5,
+        "head": 4,
+        "entropy": 0.8939421178908722,
+        "normalized_entropy": 0.36153843043708483,
+        "mean_distance": 7.090869719723384,
+        "normalized_distance": 0.5522745122779171,
+        "previous_token_rate": 0.0816656470997259,
+        "sink_rate": 0.3166698287241161
+      },
+      {
+        "layer": 5,
+        "head": 5,
+        "entropy": 1.0334973672161505,
+        "normalized_entropy": 0.42448080318251774,
+        "mean_distance": 7.2945823099435625,
+        "normalized_distance": 0.5572550710940664,
+        "previous_token_rate": 0.087733187538106,
+        "sink_rate": 0.2990752039477229
+      },
+      {
+        "layer": 5,
+        "head": 6,
+        "entropy": 0.9822698399559335,
+        "normalized_entropy": 0.41328718617566296,
+        "mean_distance": 8.458605304086195,
+        "normalized_distance": 0.6537599754847679,
+        "previous_token_rate": 0.07835602661361918,
+        "sink_rate": 0.3879711169283837
+      },
+      {
+        "layer": 5,
+        "head": 7,
+        "entropy": 1.5255239755479726,
+        "normalized_entropy": 0.6056857018475277,
+        "mean_distance": 5.03620109562771,
+        "normalized_distance": 0.42551661844151323,
+        "previous_token_rate": 0.13252184516750276,
+        "sink_rate": 0.2042512686457485
+      }
+    ]
+  },
+  "delta": {
+    "overall": {
+      "normalized_entropy": 0.018,
+      "normalized_distance": -0.0612,
+      "previous_token_rate": -0.0088,
+      "sink_rate": -0.1121
+    },
+    "largest_abs_change": {
+      "normalized_entropy": {
+        "layer": 2,
+        "head": 7,
+        "change": 0.3756
+      },
+      "normalized_distance": {
+        "layer": 2,
+        "head": 7,
+        "change": -0.3886
+      },
+      "previous_token_rate": {
+        "layer": 4,
+        "head": 2,
+        "change": -0.3463
+      },
+      "sink_rate": {
+        "layer": 2,
+        "head": 7,
+        "change": -0.5706
+      }
+    },
+    "cells": [
+      {
+        "layer": 0,
+        "head": 0,
+        "normalized_entropy": -0.01394,
+        "normalized_distance": 0.02027,
+        "previous_token_rate": -0.01195,
+        "sink_rate": 0.01077
+      },
+      {
+        "layer": 0,
+        "head": 1,
+        "normalized_entropy": -0.01564,
+        "normalized_distance": 0.02854,
+        "previous_token_rate": -0.01353,
+        "sink_rate": 0.02205
+      },
+      {
+        "layer": 0,
+        "head": 2,
+        "normalized_entropy": -0.0052,
+        "normalized_distance": 0.00296,
+        "previous_token_rate": -0.00472,
+        "sink_rate": 0.00125
+      },
+      {
+        "layer": 0,
+        "head": 3,
+        "normalized_entropy": 0.01555,
+        "normalized_distance": 0.00987,
+        "previous_token_rate": -0.0136,
+        "sink_rate": -0.0197
+      },
+      {
+        "layer": 0,
+        "head": 4,
+        "normalized_entropy": -0.0091,
+        "normalized_distance": 0.00139,
+        "previous_token_rate": 0.00064,
+        "sink_rate": -0.00576
+      },
+      {
+        "layer": 0,
+        "head": 5,
+        "normalized_entropy": -0.0229,
+        "normalized_distance": 0.03496,
+        "previous_token_rate": -0.00263,
+        "sink_rate": 0.03843
+      },
+      {
+        "layer": 0,
+        "head": 6,
+        "normalized_entropy": 0.0202,
+        "normalized_distance": 0.00431,
+        "previous_token_rate": -0.02298,
+        "sink_rate": -0.0172
+      },
+      {
+        "layer": 0,
+        "head": 7,
+        "normalized_entropy": -0.02591,
+        "normalized_distance": 0.02396,
+        "previous_token_rate": -0.00284,
+        "sink_rate": -0.00076
+      },
+      {
+        "layer": 1,
+        "head": 0,
+        "normalized_entropy": 0.12006,
+        "normalized_distance": -0.09181,
+        "previous_token_rate": 0.03131,
+        "sink_rate": -0.14836
+      },
+      {
+        "layer": 1,
+        "head": 1,
+        "normalized_entropy": 0.02955,
+        "normalized_distance": -0.02441,
+        "previous_token_rate": 0.01361,
+        "sink_rate": -0.05696
+      },
+      {
+        "layer": 1,
+        "head": 2,
+        "normalized_entropy": -0.04214,
+        "normalized_distance": 0.03594,
+        "previous_token_rate": -0.00384,
+        "sink_rate": 0.03584
+      },
+      {
+        "layer": 1,
+        "head": 3,
+        "normalized_entropy": 0.07706,
+        "normalized_distance": -0.05351,
+        "previous_token_rate": 0.01123,
+        "sink_rate": -0.1182
+      },
+      {
+        "layer": 1,
+        "head": 4,
+        "normalized_entropy": 0.05209,
+        "normalized_distance": -0.03241,
+        "previous_token_rate": 0.00636,
+        "sink_rate": -0.06992
+      },
+      {
+        "layer": 1,
+        "head": 5,
+        "normalized_entropy": 0.32411,
+        "normalized_distance": -0.13066,
+        "previous_token_rate": 0.0231,
+        "sink_rate": -0.25668
+      },
+      {
+        "layer": 1,
+        "head": 6,
+        "normalized_entropy": 0.03456,
+        "normalized_distance": -0.02161,
+        "previous_token_rate": 0.00756,
+        "sink_rate": -0.07005
+      },
+      {
+        "layer": 1,
+        "head": 7,
+        "normalized_entropy": 0.13047,
+        "normalized_distance": -0.05634,
+        "previous_token_rate": -0.00489,
+        "sink_rate": -0.16192
+      },
+      {
+        "layer": 2,
+        "head": 0,
+        "normalized_entropy": -0.00053,
+        "normalized_distance": -0.01929,
+        "previous_token_rate": 0.0091,
+        "sink_rate": -0.04155
+      },
+      {
+        "layer": 2,
+        "head": 1,
+        "normalized_entropy": -0.0047,
+        "normalized_distance": -0.00984,
+        "previous_token_rate": -0.01527,
+        "sink_rate": -0.08655
+      },
+      {
+        "layer": 2,
+        "head": 2,
+        "normalized_entropy": -0.04376,
+        "normalized_distance": 0.01454,
+        "previous_token_rate": -0.0149,
+        "sink_rate": -0.00998
+      },
+      {
+        "layer": 2,
+        "head": 3,
+        "normalized_entropy": -0.03772,
+        "normalized_distance": -0.07795,
+        "previous_token_rate": 0.01758,
+        "sink_rate": -0.07458
+      },
+      {
+        "layer": 2,
+        "head": 4,
+        "normalized_entropy": 0.02175,
+        "normalized_distance": 0.00061,
+        "previous_token_rate": -0.03703,
+        "sink_rate": -0.0564
+      },
+      {
+        "layer": 2,
+        "head": 5,
+        "normalized_entropy": -0.05239,
+        "normalized_distance": 0.0106,
+        "previous_token_rate": -0.01247,
+        "sink_rate": -0.06795
+      },
+      {
+        "layer": 2,
+        "head": 6,
+        "normalized_entropy": 0.03291,
+        "normalized_distance": -0.01336,
+        "previous_token_rate": -0.00386,
+        "sink_rate": -0.10366
+      },
+      {
+        "layer": 2,
+        "head": 7,
+        "normalized_entropy": 0.37557,
+        "normalized_distance": -0.38856,
+        "previous_token_rate": 0.09453,
+        "sink_rate": -0.57065
+      },
+      {
+        "layer": 3,
+        "head": 0,
+        "normalized_entropy": 0.00216,
+        "normalized_distance": 0.01799,
+        "previous_token_rate": -0.22605,
+        "sink_rate": -0.01324
+      },
+      {
+        "layer": 3,
+        "head": 1,
+        "normalized_entropy": 0.02195,
+        "normalized_distance": -0.00201,
+        "previous_token_rate": -0.00038,
+        "sink_rate": -0.11646
+      },
+      {
+        "layer": 3,
+        "head": 2,
+        "normalized_entropy": -0.0664,
+        "normalized_distance": 0.00309,
+        "previous_token_rate": -0.02505,
+        "sink_rate": -0.03406
+      },
+      {
+        "layer": 3,
+        "head": 3,
+        "normalized_entropy": 0.05061,
+        "normalized_distance": -0.14868,
+        "previous_token_rate": 0.01879,
+        "sink_rate": -0.19574
+      },
+      {
+        "layer": 3,
+        "head": 4,
+        "normalized_entropy": -0.05267,
+        "normalized_distance": -0.01524,
+        "previous_token_rate": 0.00245,
+        "sink_rate": -0.0548
+      },
+      {
+        "layer": 3,
+        "head": 5,
+        "normalized_entropy": -0.04542,
+        "normalized_distance": 0.02028,
+        "previous_token_rate": -0.20998,
+        "sink_rate": -0.01758
+      },
+      {
+        "layer": 3,
+        "head": 6,
+        "normalized_entropy": 0.11819,
+        "normalized_distance": -0.12482,
+        "previous_token_rate": 0.03658,
+        "sink_rate": -0.27587
+      },
+      {
+        "layer": 3,
+        "head": 7,
+        "normalized_entropy": -0.05838,
+        "normalized_distance": -0.02768,
+        "previous_token_rate": -0.02072,
+        "sink_rate": -0.06149
+      },
+      {
+        "layer": 4,
+        "head": 0,
+        "normalized_entropy": -0.04097,
+        "normalized_distance": -0.0768,
+        "previous_token_rate": 0.05197,
+        "sink_rate": -0.09026
+      },
+      {
+        "layer": 4,
+        "head": 1,
+        "normalized_entropy": -0.13904,
+        "normalized_distance": -0.10617,
+        "previous_token_rate": -0.0251,
+        "sink_rate": -0.11182
+      },
+      {
+        "layer": 4,
+        "head": 2,
+        "normalized_entropy": 0.05554,
+        "normalized_distance": 0.05884,
+        "previous_token_rate": -0.3463,
+        "sink_rate": -0.00983
+      },
+      {
+        "layer": 4,
+        "head": 3,
+        "normalized_entropy": -0.08096,
+        "normalized_distance": -0.01059,
+        "previous_token_rate": -0.00485,
+        "sink_rate": -0.02904
+      },
+      {
+        "layer": 4,
+        "head": 4,
+        "normalized_entropy": -0.02461,
+        "normalized_distance": -0.09661,
+        "previous_token_rate": 0.01874,
+        "sink_rate": -0.19262
+      },
+      {
+        "layer": 4,
+        "head": 5,
+        "normalized_entropy": 0.05475,
+        "normalized_distance": -0.30116,
+        "previous_token_rate": 0.0302,
+        "sink_rate": -0.35689
+      },
+      {
+        "layer": 4,
+        "head": 6,
+        "normalized_entropy": 0.03183,
+        "normalized_distance": -0.10668,
+        "previous_token_rate": 0.01301,
+        "sink_rate": -0.19301
+      },
+      {
+        "layer": 4,
+        "head": 7,
+        "normalized_entropy": -0.01539,
+        "normalized_distance": -0.25166,
+        "previous_token_rate": 0.03974,
+        "sink_rate": -0.32503
+      },
+      {
+        "layer": 5,
+        "head": 0,
+        "normalized_entropy": -0.08097,
+        "normalized_distance": -0.16219,
+        "previous_token_rate": 0.04863,
+        "sink_rate": -0.16844
+      },
+      {
+        "layer": 5,
+        "head": 1,
+        "normalized_entropy": -0.04003,
+        "normalized_distance": 0.00831,
+        "previous_token_rate": 0.00694,
+        "sink_rate": -0.07669
+      },
+      {
+        "layer": 5,
+        "head": 2,
+        "normalized_entropy": -0.12364,
+        "normalized_distance": -0.01933,
+        "previous_token_rate": 0.00752,
+        "sink_rate": 0.02026
+      },
+      {
+        "layer": 5,
+        "head": 3,
+        "normalized_entropy": 0.10685,
+        "normalized_distance": -0.22427,
+        "previous_token_rate": 0.03554,
+        "sink_rate": -0.33645
+      },
+      {
+        "layer": 5,
+        "head": 4,
+        "normalized_entropy": 0.07341,
+        "normalized_distance": -0.21101,
+        "previous_token_rate": 0.02148,
+        "sink_rate": -0.30343
+      },
+      {
+        "layer": 5,
+        "head": 5,
+        "normalized_entropy": 0.07542,
+        "normalized_distance": -0.18556,
+        "previous_token_rate": 0.02362,
+        "sink_rate": -0.25735
+      },
+      {
+        "layer": 5,
+        "head": 6,
+        "normalized_entropy": 0.02943,
+        "normalized_distance": -0.08854,
+        "previous_token_rate": 0.01463,
+        "sink_rate": -0.16542
+      },
+      {
+        "layer": 5,
+        "head": 7,
+        "normalized_entropy": 0.05558,
+        "normalized_distance": -0.15614,
+        "previous_token_rate": 0.01502,
+        "sink_rate": -0.18379
+      }
+    ]
+  }
+}

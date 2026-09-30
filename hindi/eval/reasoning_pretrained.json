@@ -1,0 +1,112 @@
+{
+  "checkpoint": "hindi/checkpoints/ckpt_final.pt",
+  "elapsed_s": 717.8,
+  "lang": "hi",
+  "max_new_tokens": 8,
+  "model": "hi_25m",
+  "slices": {
+    "test_iid": {
+      "baselines": {
+        "majority_answer": 0.108,
+        "positional_best": 0.323,
+        "random": 0.3585
+      },
+      "by_template": {
+        "0": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.5563,
+          "n": 151
+        },
+        "1": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.1628,
+          "n": 258
+        },
+        "2": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.1375,
+          "n": 240
+        },
+        "4": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.321,
+          "n": 243
+        },
+        "5": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.0,
+          "n": 108
+        }
+      },
+      "exact_match": 0.0,
+      "likelihood_acc": 0.237,
+      "likelihood_acc_lennorm": 0.232,
+      "n": 1000,
+      "prefix_match": 0.095
+    },
+    "test_names": {
+      "baselines": {
+        "majority_answer": 0.132,
+        "positional_best": 0.316,
+        "random": 0.3592
+      },
+      "by_template": {
+        "0": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.5355,
+          "n": 155
+        },
+        "1": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.1343,
+          "n": 216
+        },
+        "2": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.1778,
+          "n": 270
+        },
+        "4": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.3348,
+          "n": 227
+        },
+        "5": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.0,
+          "n": 132
+        }
+      },
+      "exact_match": 0.0,
+      "likelihood_acc": 0.236,
+      "likelihood_acc_lennorm": 0.27,
+      "n": 1000,
+      "prefix_match": 0.087
+    },
+    "test_templates": {
+      "baselines": {
+        "majority_answer": 0.049,
+        "positional_best": 0.423,
+        "random": 0.3333
+      },
+      "by_template": {
+        "3": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.462,
+          "n": 500
+        },
+        "6": {
+          "exact_match": 0.0,
+          "likelihood_acc": 0.618,
+          "n": 500
+        }
+      },
+      "exact_match": 0.0,
+      "likelihood_acc": 0.54,
+      "likelihood_acc_lennorm": 0.472,
+      "n": 1000,
+      "prefix_match": 0.382
+    }
+  },
+  "tag": "pretrained"
+}

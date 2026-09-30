@@ -1,0 +1,11 @@
+{
+  "seed": 1337,
+  "min_words": 128,
+  "requested_docs": 2000,
+  "eligible_docs_seen": 68925,
+  "source_file": "hindi\\data\\splits\\test.jsonl",
+  "source_sha256_head": "bd1dca9367af004505dbf939cf32f2d64e375b3f32c64c9ba659fd870daab559",
+  "docs_written": 2000,
+  "total_words": 1228639,
+  "manual_docs": 245
+}

@@ -1,0 +1,33 @@
+{
+  "sweep": [
+    {
+      "vocab_size": 5000,
+      "fertility": 1.9145,
+      "unk_rate": 8.18e-06,
+      "unk_count": 129,
+      "chars_per_token": 2.661,
+      "eval_tokens": 15771722,
+      "eval_words": 8238174
+    },
+    {
+      "vocab_size": 8000,
+      "fertility": 1.5569,
+      "unk_rate": 1.006e-05,
+      "unk_count": 129,
+      "chars_per_token": 3.2722,
+      "eval_tokens": 12825788,
+      "eval_words": 8238174
+    },
+    {
+      "vocab_size": 10000,
+      "fertility": 1.4675,
+      "unk_rate": 1.067e-05,
+      "unk_count": 129,
+      "chars_per_token": 3.4715,
+      "eval_tokens": 12089606,
+      "eval_words": 8238174
+    }
+  ],
+  "chosen_vocab": 10000,
+  "selection_rule": "smallest vocab >= 5,000 within 5% fertility of the best (1.468)"
+}

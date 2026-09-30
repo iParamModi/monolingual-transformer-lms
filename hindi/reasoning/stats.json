@@ -1,0 +1,722 @@
+{
+  "digit_audit": {
+    "ascii_digit_chars": 17525334,
+    "corpus_tokens": 479808984,
+    "devanagari_digit_chars": 637759,
+    "devanagari_share": 0.03511290725648985,
+    "glyph_tokenization": {
+      "ascii:0": {
+        "ids": [
+          647
+        ],
+        "is_unk": false
+      },
+      "ascii:1": {
+        "ids": [
+          109
+        ],
+        "is_unk": false
+      },
+      "ascii:2": {
+        "ids": [
+          105
+        ],
+        "is_unk": false
+      },
+      "ascii:3": {
+        "ids": [
+          339
+        ],
+        "is_unk": false
+      },
+      "ascii:4": {
+        "ids": [
+          451
+        ],
+        "is_unk": false
+      },
+      "ascii:5": {
+        "ids": [
+          431
+        ],
+        "is_unk": false
+      },
+      "ascii:6": {
+        "ids": [
+          635
+        ],
+        "is_unk": false
+      },
+      "ascii:7": {
+        "ids": [
+          710
+        ],
+        "is_unk": false
+      },
+      "ascii:8": {
+        "ids": [
+          703
+        ],
+        "is_unk": false
+      },
+      "ascii:9": {
+        "ids": [
+          865
+        ],
+        "is_unk": false
+      },
+      "deva:०": {
+        "ids": [
+          6504,
+          6590
+        ],
+        "is_unk": false
+      },
+      "deva:१": {
+        "ids": [
+          1598
+        ],
+        "is_unk": false
+      },
+      "deva:२": {
+        "ids": [
+          2617
+        ],
+        "is_unk": false
+      },
+      "deva:३": {
+        "ids": [
+          4640
+        ],
+        "is_unk": false
+      },
+      "deva:४": {
+        "ids": [
+          5657
+        ],
+        "is_unk": false
+      },
+      "deva:५": {
+        "ids": [
+          5751
+        ],
+        "is_unk": false
+      },
+      "deva:६": {
+        "ids": [
+          6504,
+          6603
+        ],
+        "is_unk": false
+      },
+      "deva:७": {
+        "ids": [
+          6504,
+          6607
+        ],
+        "is_unk": false
+      },
+      "deva:८": {
+        "ids": [
+          6504,
+          6608
+        ],
+        "is_unk": false
+      },
+      "deva:९": {
+        "ids": [
+          6504,
+          6604
+        ],
+        "is_unk": false
+      }
+    },
+    "recommended": "ascii"
+  },
+  "digit_script": "ascii",
+  "dimensions": [
+    {
+      "noun": "लंबाई",
+      "pool": "people",
+      "range": [
+        140,
+        190
+      ],
+      "unit": "सेंटीमीटर"
+    },
+    {
+      "noun": "उम्र",
+      "pool": "people",
+      "range": [
+        8,
+        70
+      ],
+      "unit": "साल"
+    },
+    {
+      "noun": "वजन",
+      "pool": "objects",
+      "range": [
+        2,
+        40
+      ],
+      "unit": "किलो"
+    },
+    {
+      "noun": "कीमत",
+      "pool": "objects",
+      "range": [
+        50,
+        950
+      ],
+      "unit": "रुपये"
+    },
+    {
+      "noun": "गति",
+      "pool": "vehicles",
+      "range": [
+        10,
+        90
+      ],
+      "unit": "किलोमीटर प्रति घंटा"
+    }
+  ],
+  "known_confounds": [
+    "In a three-entity chain the middle entity is necessarily named in both premises, so 'the entity mentioned twice' identifies T6's answer without any ordering. T6 is held out of training, so the model cannot have learned that shortcut here, but T6 accuracy should not be read as proof of full ordering on its own.",
+    "For the same reason T6's answer is never the last entity mentioned: it is at mention position 0 or 1, roughly half the time each. A fixed-position heuristic therefore scores about 50% on T6 alone and in the low forties on test_templates as a whole, against about 33% elsewhere. The exact figure per split is recorded as positional_heuristic_best and is the floor the reasoning accuracy table must be read against.",
+    "Numeric values are drawn uniformly in a plausible band and are not world-accurate; a 30 kg book is possible. The task is comparison, not world knowledge."
+  ],
+  "lang": "hi",
+  "language": "hindi",
+  "leakage_control": {
+    "answer_position": "round-robin target position per template, resampled to match",
+    "gender": "all entities in an example share grammatical gender, so the adjective in the question does not identify the answer",
+    "held_out_entity_names": "test_names and test_templates draw only from the test pools",
+    "held_out_templates": "T3 and T6 never appear in train, val or test_iid",
+    "prompt_disjointness": "every split's prompts are blocked from all later splits"
+  },
+  "max_len": 128,
+  "pools": {
+    "test": {
+      "objects": {
+        "f": [
+          "छतरी",
+          "चादर",
+          "पेटी",
+          "बाल्टी",
+          "कंघी"
+        ],
+        "m": [
+          "थैला",
+          "बर्तन",
+          "डिब्बा",
+          "ताला",
+          "कटोरा"
+        ]
+      },
+      "people": {
+        "f": [
+          "नेहा",
+          "पूजा",
+          "दिव्या",
+          "रचना",
+          "वंदना",
+          "किरण",
+          "अंजलि",
+          "ज्योति"
+        ],
+        "m": [
+          "अर्जुन",
+          "करण",
+          "रोहित",
+          "मनीष",
+          "नितिन",
+          "पंकज",
+          "आशीष",
+          "गौरव"
+        ]
+      },
+      "vehicles": {
+        "f": [
+          "रेलगाड़ी",
+          "नौका",
+          "मेट्रो",
+          "कार",
+          "वैन"
+        ],
+        "m": [
+          "ऑटो",
+          "जहाज़",
+          "हेलिकॉप्टर",
+          "ठेला",
+          "टैंकर"
+        ]
+      }
+    },
+    "train": {
+      "objects": {
+        "f": [
+          "किताब",
+          "कुर्सी",
+          "मेज़",
+          "घड़ी",
+          "टोपी",
+          "कमीज़",
+          "थाली",
+          "दरी"
+        ],
+        "m": [
+          "बैग",
+          "झोला",
+          "जूता",
+          "पर्दा",
+          "तकिया",
+          "गमला"
+        ]
+      },
+      "people": {
+        "f": [
+          "गीता",
+          "सीता",
+          "रीता",
+          "कविता",
+          "मीरा",
+          "अनीता",
+          "प्रीति",
+          "रेखा",
+          "ममता",
+          "सुनीता",
+          "शारदा",
+          "उर्मिला"
+        ],
+        "m": [
+          "राम",
+          "श्याम",
+          "मोहन",
+          "अनिल",
+          "सुनील",
+          "विकास",
+          "रवि",
+          "संजय",
+          "दीपक",
+          "राजेश",
+          "अमित",
+          "विनोद"
+        ]
+      },
+      "vehicles": {
+        "f": [
+          "गाड़ी",
+          "साइकिल",
+          "बस",
+          "ट्रेन",
+          "नाव",
+          "जीप",
+          "लॉरी",
+          "टैक्सी"
+        ],
+        "m": [
+          "स्कूटर",
+          "ट्रक",
+          "ट्रैक्टर",
+          "रिक्शा",
+          "तांगा",
+          "टेम्पो"
+        ]
+      }
+    }
+  },
+  "seed": 1337,
+  "splits": {
+    "test_iid": {
+      "answer_position": {
+        "2_entities": {
+          "-1": 108,
+          "0": 76,
+          "1": 75
+        },
+        "3_entities": {
+          "0": 247,
+          "1": 247,
+          "2": 247
+        }
+      },
+      "ask": {
+        "big": 489,
+        "small": 511
+      },
+      "dims": {
+        "उम्र": 219,
+        "कीमत": 183,
+        "गति": 211,
+        "लंबाई": 189,
+        "वजन": 198
+      },
+      "distinct_answers": 53,
+      "distinct_prompts": 1000,
+      "gender": {
+        "f": 520,
+        "m": 480
+      },
+      "most_common_answers": [
+        [
+          "बराबर",
+          108
+        ],
+        [
+          "जूता",
+          37
+        ],
+        [
+          "थाली",
+          32
+        ],
+        [
+          "मेज़",
+          29
+        ],
+        [
+          "पर्दा",
+          29
+        ]
+      ],
+      "n": 1000,
+      "positional_heuristic_best": 0.3621,
+      "templates": {
+        "0": 151,
+        "1": 258,
+        "2": 240,
+        "4": 243,
+        "5": 108
+      },
+      "tokens": {
+        "max": 50,
+        "mean": 28.5,
+        "p95": 42
+      },
+      "unk_tokens": 0
+    },
+    "test_names": {
+      "answer_position": {
+        "2_entities": {
+          "-1": 132,
+          "0": 78,
+          "1": 77
+        },
+        "3_entities": {
+          "0": 238,
+          "1": 238,
+          "2": 237
+        }
+      },
+      "ask": {
+        "big": 525,
+        "small": 475
+      },
+      "dims": {
+        "उम्र": 209,
+        "कीमत": 177,
+        "गति": 190,
+        "लंबाई": 207,
+        "वजन": 217
+      },
+      "distinct_answers": 37,
+      "distinct_prompts": 1000,
+      "gender": {
+        "f": 509,
+        "m": 491
+      },
+      "most_common_answers": [
+        [
+          "बराबर",
+          132
+        ],
+        [
+          "कंघी",
+          50
+        ],
+        [
+          "थैला",
+          39
+        ],
+        [
+          "बाल्टी",
+          39
+        ],
+        [
+          "ज्योति",
+          38
+        ]
+      ],
+      "n": 1000,
+      "positional_heuristic_best": 0.3641,
+      "templates": {
+        "0": 155,
+        "1": 216,
+        "2": 270,
+        "4": 227,
+        "5": 132
+      },
+      "tokens": {
+        "max": 50,
+        "mean": 29.12,
+        "p95": 43
+      },
+      "unk_tokens": 0
+    },
+    "test_templates": {
+      "answer_position": {
+        "3_entities": {
+          "0": 411,
+          "1": 423,
+          "2": 166
+        }
+      },
+      "ask": {
+        "big": 252,
+        "middle": 500,
+        "small": 248
+      },
+      "dims": {
+        "उम्र": 219,
+        "कीमत": 189,
+        "गति": 195,
+        "लंबाई": 198,
+        "वजन": 199
+      },
+      "distinct_answers": 36,
+      "distinct_prompts": 1000,
+      "gender": {
+        "f": 513,
+        "m": 487
+      },
+      "most_common_answers": [
+        [
+          "बाल्टी",
+          49
+        ],
+        [
+          "चादर",
+          43
+        ],
+        [
+          "पेटी",
+          42
+        ],
+        [
+          "डिब्बा",
+          41
+        ],
+        [
+          "ताला",
+          39
+        ]
+      ],
+      "n": 1000,
+      "positional_heuristic_best": 0.423,
+      "templates": {
+        "3": 500,
+        "6": 500
+      },
+      "tokens": {
+        "max": 47,
+        "mean": 30.92,
+        "p95": 41
+      },
+      "unk_tokens": 0
+    },
+    "train": {
+      "answer_position": {
+        "2_entities": {
+          "-1": 2460,
+          "0": 1410,
+          "1": 1617
+        },
+        "3_entities": {
+          "0": 4839,
+          "1": 4838,
+          "2": 4836
+        }
+      },
+      "ask": {
+        "big": 10134,
+        "small": 9866
+      },
+      "dims": {
+        "उम्र": 5067,
+        "कीमत": 3350,
+        "गति": 3377,
+        "लंबाई": 4974,
+        "वजन": 3232
+      },
+      "distinct_answers": 53,
+      "distinct_prompts": 19414,
+      "gender": {
+        "f": 10843,
+        "m": 9157
+      },
+      "most_common_answers": [
+        [
+          "बराबर",
+          2460
+        ],
+        [
+          "कुर्सी",
+          450
+        ],
+        [
+          "दरी",
+          437
+        ],
+        [
+          "टोपी",
+          422
+        ],
+        [
+          "घड़ी",
+          419
+        ]
+      ],
+      "n": 20000,
+      "positional_heuristic_best": 0.368,
+      "templates": {
+        "0": 3027,
+        "1": 5120,
+        "2": 4975,
+        "4": 4418,
+        "5": 2460
+      },
+      "tokens": {
+        "max": 49,
+        "mean": 27.75,
+        "p95": 42
+      },
+      "unk_tokens": 0
+    },
+    "val": {
+      "answer_position": {
+        "2_entities": {
+          "-1": 214,
+          "0": 144,
+          "1": 144
+        },
+        "3_entities": {
+          "0": 500,
+          "1": 499,
+          "2": 499
+        }
+      },
+      "ask": {
+        "big": 1009,
+        "small": 991
+      },
+      "dims": {
+        "उम्र": 401,
+        "कीमत": 401,
+        "गति": 396,
+        "लंबाई": 418,
+        "वजन": 384
+      },
+      "distinct_answers": 53,
+      "distinct_prompts": 2000,
+      "gender": {
+        "f": 1028,
+        "m": 972
+      },
+      "most_common_answers": [
+        [
+          "बराबर",
+          214
+        ],
+        [
+          "झोला",
+          76
+        ],
+        [
+          "घड़ी",
+          57
+        ],
+        [
+          "गमला",
+          56
+        ],
+        [
+          "थाली",
+          53
+        ]
+      ],
+      "n": 2000,
+      "positional_heuristic_best": 0.3606,
+      "templates": {
+        "0": 288,
+        "1": 498,
+        "2": 511,
+        "4": 489,
+        "5": 214
+      },
+      "tokens": {
+        "max": 50,
+        "mean": 28.52,
+        "p95": 43
+      },
+      "unk_tokens": 0
+    }
+  },
+  "template_weights": {
+    "test_templates": {
+      "3": 50,
+      "6": 50
+    },
+    "train_val_iid_names": {
+      "0": 15,
+      "1": 25,
+      "2": 25,
+      "4": 23,
+      "5": 12
+    }
+  },
+  "templates": {
+    "0": {
+      "held_out": false,
+      "n_entities": 2,
+      "name": "pair_direct",
+      "numeric": false
+    },
+    "1": {
+      "held_out": false,
+      "n_entities": 3,
+      "name": "chain_smallest",
+      "numeric": false
+    },
+    "2": {
+      "held_out": false,
+      "n_entities": 3,
+      "name": "chain_largest",
+      "numeric": false
+    },
+    "3": {
+      "held_out": true,
+      "n_entities": 3,
+      "name": "chain_pair_relation",
+      "numeric": false
+    },
+    "4": {
+      "held_out": false,
+      "n_entities": 3,
+      "name": "numeric_extreme",
+      "numeric": true
+    },
+    "5": {
+      "held_out": false,
+      "n_entities": 2,
+      "name": "numeric_equal",
+      "numeric": true
+    },
+    "6": {
+      "held_out": true,
+      "n_entities": 3,
+      "name": "chain_middle",
+      "numeric": false
+    }
+  }
+}
